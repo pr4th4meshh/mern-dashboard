@@ -1,6 +1,8 @@
-import React from "react"
+import React, { useState } from "react"
 import type { FormProps } from "antd"
-import { Button, Form, Input } from "antd"
+import { Button, Form, Input, message } from "antd"
+import { useSigninMutation } from "../../redux/slices/authSlice"
+import { useNavigate } from "react-router-dom"
 
 type FieldType = {
   email?: string
@@ -9,54 +11,70 @@ type FieldType = {
   confirmPassword?: string
 }
 
-const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-  console.log("Success:", values)
-}
+const Login: React.FC = () => {
+  const [form] = Form.useForm()
+  const [signin, { isLoading }] = useSigninMutation()
+  const navigate = useNavigate()
+  const onFinish = async (values) => {
+    try {
+      await signin(values).unwrap()
+      message.success("Login successfull!")
+      form.resetFields()
+      navigate("/")
+    } catch (error) {
+      message.error("Invalid credentials. Please try again!")
+      console.log("Invalid credentials. Please try again!")
+    }
+  }
 
-const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
-  console.log("Failed:", errorInfo)
-}
-
-const Login: React.FC = () => (
-  <div className="flex justify-center items-center h-[100vh] bg-primary ">
-    <div>
-      <h1 className="text-2xl text-center pb-10">Login to continue</h1>
-      <Form
-        className="border p-10 sm:w-[300px] md:w-[400px] bg-white"
-        layout="vertical"
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-        <Form.Item<FieldType>
-          label="Email"
-          name="email"
-          rules={[{ required: true, message: "Please input your username!" }]}
+  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
+    errorInfo
+  ) => {
+    console.log("Failed:", errorInfo)
+  }
+  return (
+    <div className="flex justify-center items-center h-[100vh] bg-primary ">
+      <div>
+        <h1 className="text-2xl text-center pb-10">Login to continue</h1>
+        <Form
+          className="border p-10 sm:w-[300px] md:w-[400px] bg-white"
+          layout="vertical"
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
+          form={form}
         >
-          <Input placeholder="Enter email.." className="w-full" />
-        </Form.Item>
-
-        <Form.Item<FieldType>
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
-        >
-          <Input.Password placeholder="Enter password.." className="w-full" />
-        </Form.Item>
-
-        <Form.Item>
-          <Button
-            className="w-full bg-secondary"
-            type="primary"
-            htmlType="submit"
+          <Form.Item<FieldType>
+            label="Email"
+            name="email"
+            rules={[{ required: true, message: "Please input your username!" }]}
           >
-            Register
-          </Button>
-        </Form.Item>
-      </Form>
+            <Input placeholder="Enter email.." className="w-full" />
+          </Form.Item>
+
+          <Form.Item<FieldType>
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input.Password placeholder="Enter password.." className="w-full" />
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              className="w-full bg-secondary"
+              type="primary"
+              htmlType="submit"
+              loading={isLoading}
+            >
+              Login
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default Login

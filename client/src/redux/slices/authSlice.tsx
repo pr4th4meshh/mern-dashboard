@@ -12,7 +12,14 @@ export const authSlice = createApi({
         body: newUser,
       }),
     }),
+    signin: builder.mutation({
+      query: (credentials) => ({
+        url: "/signin",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
   }),
 })
 
-export const {useSignupMutation} = authSlice
+export const { useSignupMutation, useSigninMutation } = authSlice

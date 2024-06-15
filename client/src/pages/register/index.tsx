@@ -12,7 +12,7 @@ const Register = () => {
       await signup(values).unwrap();
       message.success('Signup successful!');
       form.resetFields();
-      navigate("/")
+      navigate("/login")
     } catch (error) {
       message.error('Signup failed. Please try again.');
     }
