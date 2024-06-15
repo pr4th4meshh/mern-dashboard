@@ -1,16 +1,20 @@
 import { Form, Input, Button, message } from 'antd';
 import { useSignupMutation } from '../../redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../redux/slices/userSlice';
 
 const Register = () => {
   const [form] = Form.useForm();
   const [signup, { isLoading }] = useSignupMutation();
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const onFinish = async (values) => {
     try {
-      await signup(values).unwrap();
+      const user = await signup(values).unwrap();
       message.success('Signup successful!');
+      dispatch(setUser(user));
       form.resetFields();
       navigate("/login")
     } catch (error) {

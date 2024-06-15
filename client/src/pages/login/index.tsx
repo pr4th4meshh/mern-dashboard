@@ -3,6 +3,8 @@ import type { FormProps } from "antd"
 import { Button, Form, Input, message } from "antd"
 import { useSigninMutation } from "../../redux/slices/authSlice"
 import { useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { setUser } from "../../redux/slices/userSlice"
 
 type FieldType = {
   email?: string
@@ -14,11 +16,15 @@ type FieldType = {
 const Login: React.FC = () => {
   const [form] = Form.useForm()
   const [signin, { isLoading }] = useSigninMutation()
+
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
   const onFinish = async (values) => {
     try {
-      await signin(values).unwrap()
+      const user = await signin(values).unwrap()
       message.success("Login successfull!")
+      dispatch(setUser(user))
       form.resetFields()
       navigate("/")
     } catch (error) {
