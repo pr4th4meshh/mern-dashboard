@@ -1,66 +1,73 @@
-import React from 'react';
-import type { FormProps } from 'antd';
-import { Button, Form, Input } from 'antd';
+import { Form, Input, Button, message } from 'antd';
+import { useSignupMutation } from '../../redux/slices/authSlice';
+import { useNavigate } from 'react-router-dom';
 
-type FieldType = {
-  email?: string;
-  password?: string;
-  remember?: string;
-  confirmPassword?: string
-};
+const Register = () => {
+  const [form] = Form.useForm();
+  const [signup, { isLoading }] = useSignupMutation();
+  const navigate = useNavigate()
 
-const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-  console.log('Success:', values);
-};
+  const onFinish = async (values) => {
+    try {
+      await signup(values).unwrap();
+      message.success('Signup successful!');
+      form.resetFields();
+      navigate("/")
+    } catch (error) {
+      message.error('Signup failed. Please try again.');
+    }
+  };
 
-const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
-  console.log('Failed:', errorInfo);
-};
+  const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+  };
 
-const Register: React.FC = () => (
- <div className='flex justify-center items-center h-[100vh] bg-primary '>
-    <div>
-      <h1 className='text-2xl text-center pb-10' >Welcome to MERN-Dashboard</h1>
-    <Form
-    className='border p-10 sm:w-[300px] md:w-[400px] bg-white'
-    layout='vertical'
-    initialValues={{ remember: true }}
-    onFinish={onFinish}
-    onFinishFailed={onFinishFailed}
-    autoComplete="off"
-  >
-    <Form.Item<FieldType>
-      label="Email"
-      name="email"
-      rules={[{ required: true, message: 'Please input your username!' }]}
-    >
-      <Input placeholder='Enter email..' className='w-full' />
-    </Form.Item>
+  return (
+    <div className='flex justify-center items-center h-[100vh] bg-primary'>
+      <div>
+        <h1 className='text-2xl text-center pb-10'>Welcome to MERN-Dashboard</h1>
+        <Form
+          className='border p-10 sm:w-[300px] md:w-[400px] bg-white'
+          layout='vertical'
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
+          form={form}
+        >
+          <Form.Item
+            label="Username"
+            name="username"
+            rules={[{ required: true, message: 'Please input your username!' }]}
+          >
+            <Input placeholder='Enter username..' className='w-full' />
+          </Form.Item>
 
-    <Form.Item<FieldType>
-      label="Password"
-      name="password"
-      rules={[{ required: true, message: 'Please input your password!' }]}
-    >
-      <Input.Password placeholder='Enter password..' className='w-full' />
-    </Form.Item>
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[{ required: true, message: 'Please input your email!' }]}
+          >
+            <Input placeholder='Enter email..' className='w-full' />
+          </Form.Item>
 
-    <Form.Item<FieldType>
-      label="Confirm password"
-      name="confirmPassword"
-      rules={[{ required: true, message: 'Please input your password!' }]}
-    >
-      <Input.Password placeholder='Confirm password..' className='w-full' />
-    </Form.Item>
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: 'Please input your password!' }]}
+          >
+            <Input.Password placeholder='Enter password..' className='w-full' />
+          </Form.Item>
 
-    <Form.Item>
-      <Button className='w-full bg-secondary' type="primary" htmlType="submit">
-        Register
-      </Button>
-    </Form.Item>
-  </Form>
+          <Form.Item>
+            <Button className='w-full bg-secondary' type="primary" htmlType="submit" loading={isLoading}>
+              Register
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
- </div>
-);
+  );
+};
 
 export default Register;
