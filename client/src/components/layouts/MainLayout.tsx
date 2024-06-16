@@ -7,6 +7,7 @@ import {
 } from "@ant-design/icons"
 import { Avatar, Breadcrumb, Layout, Menu, theme } from "antd"
 import { Outlet, useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
 
 const { Header, Content, Sider } = Layout
 
@@ -36,6 +37,7 @@ const MainLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false)
 
   const navigate = useNavigate()
+  const user = useSelector((state) => state?.user.user)
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -49,7 +51,7 @@ const MainLayout: React.FC = () => {
         >
            <div className="flex items-center">
            <Avatar size={30} icon={<UserOutlined />} className="mr-2 bg-gray-500" />
-           <h1 className="text-lg">Hello, Prathamesh</h1>
+           <h1 className="text-lg">Hello, {user.username}</h1>
            </div>
         </Menu>
       </Header>
