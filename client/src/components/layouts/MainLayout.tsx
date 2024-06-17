@@ -3,7 +3,7 @@ import {
   LaptopOutlined,
   NotificationOutlined,
   UserOutlined,
-  LogoutOutlined
+  LogoutOutlined,
 } from "@ant-design/icons"
 import { Avatar, Breadcrumb, Layout, Menu, theme } from "antd"
 import { Outlet, useNavigate } from "react-router-dom"
@@ -49,10 +49,17 @@ const MainLayout: React.FC = () => {
           style={{ flex: 1, minWidth: 0 }}
           className=" flex justify-end "
         >
-           <div className="flex items-center">
-           <Avatar size={30} icon={<UserOutlined />} className="mr-2 bg-gray-500" />
-           <h1 className="text-lg">Hello, {user.username}</h1>
-           </div>
+          <div className="flex items-center">
+            <Avatar
+              size={30}
+              icon={<UserOutlined />}
+              className="mr-2 bg-gray-500"
+            />
+            <h1 className="text-lg">
+              Hello, {user.username} ||{" "}
+              {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+            </h1>
+          </div>
         </Menu>
       </Header>
       <Layout>

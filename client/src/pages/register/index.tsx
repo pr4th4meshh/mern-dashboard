@@ -1,4 +1,4 @@
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button, message, Select } from 'antd';
 import { useSignupMutation } from '../../redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -7,8 +7,8 @@ import { setUser } from '../../redux/slices/userSlice';
 const Register = () => {
   const [form] = Form.useForm();
   const [signup, { isLoading }] = useSignupMutation();
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onFinish = async (values) => {
     try {
@@ -16,14 +16,10 @@ const Register = () => {
       message.success('Signup successful!');
       dispatch(setUser(user));
       form.resetFields();
-      navigate("/login")
+      navigate("/login");
     } catch (error) {
-      message.error('Signup failed. Please try again.');
+      message.error(error?.data?.message || 'Signup failed. Please try again.');
     }
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
   };
 
   return (
@@ -35,7 +31,6 @@ const Register = () => {
           layout='vertical'
           initialValues={{ remember: true }}
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
           autoComplete="off"
           form={form}
         >
@@ -61,6 +56,19 @@ const Register = () => {
             rules={[{ required: true, message: 'Please input your password!' }]}
           >
             <Input.Password placeholder='Enter password..' className='w-full' />
+          </Form.Item>
+
+          <Form.Item
+            label="Role"
+            name="role"
+            rules={[{ required: true, message: 'Please select a role!' }]}
+          >
+            <Select placeholder="Select role">
+              <Select.Option value="user">User</Select.Option>
+              <Select.Option value="developer">Developer</Select.Option>
+              <Select.Option value="admin">Admin</Select.Option>
+              <Select.Option value="superadmin">Superadmin</Select.Option>
+            </Select>
           </Form.Item>
 
           <Form.Item>
