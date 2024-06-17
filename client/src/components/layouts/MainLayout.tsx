@@ -24,7 +24,7 @@ const items = [
   },
   {
     label: "Profile",
-    key: "/events",
+    key: "/profile",
     icon: <UserOutlined />,
   },
 ]
