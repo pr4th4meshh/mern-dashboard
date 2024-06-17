@@ -9,7 +9,7 @@ export const verifyToken = (roles) => async (req, res, next) => {
     const decoded = jwt.verify(token, "thisismyjwtsecretkeyforthisapp")
     const user = await User.findById(decoded.id)
     if (!roles.includes(user.role)) {
-      return res.status(403).json({ message: "Forbidden" })
+      return res.status(403).json({ message: "You need to be a admin to perform this action.." })
     }
     req.user = user
     next()
