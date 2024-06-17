@@ -1,11 +1,12 @@
 import "./App.css"
 import { Route, Routes } from "react-router-dom"
-import Events from "./pages/events"
 import Register from "./pages/register"
 import Login from "./pages/login"
 import MainLayout from "./components/layouts/MainLayout"
 import Profile from "./pages/profile"
 import PrivateRoute from "./utils/PrivateRoute"
+import Products from "./pages/products"
+import Dashboard from "./pages/dashboard"
 
 function App() {
   return (
@@ -15,7 +16,8 @@ function App() {
       <Route path="*" element={<h1>Page not found :(</h1>} />
      <Route element={<PrivateRoute />} >
      <Route element={<MainLayout />}>
-        <Route path="/" element={<Events />} />
+        <Route path="/" element={<Products />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
       </Route>
      </Route>

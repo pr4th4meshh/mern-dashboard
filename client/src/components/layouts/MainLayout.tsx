@@ -13,7 +13,7 @@ const { Header, Content, Sider } = Layout
 
 const items = [
   {
-    label: "Events",
+    label: "Products",
     key: "/",
     icon: <NotificationOutlined />,
   },
