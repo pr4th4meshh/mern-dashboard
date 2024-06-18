@@ -1,60 +1,66 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import {
   useGetAllProductsQuery,
-  useGetProductsByNameQuery,
-} from "../../redux/slices/productsSlice"
-import ProductCard from "./components/ProductCard"
-import moment from "moment"
-import PageNavbar from "../../components/ui/PageNavbar"
-import useDebounce from "../../hooks/useDebounceHook"
-import NotFoundComponent from "../../components/ui/NotFound"
+  useCreateProductMutation,
+} from "../../redux/slices/productsSlice";
+import ProductCard from "./components/ProductCard";
+import moment from "moment";
+import PageNavbar from "../../components/ui/PageNavbar";
+import useDebounce from "../../hooks/useDebounceHook";
+import NotFoundComponent from "../../components/ui/NotFound";
+import CreateProduct from "./components/CreateProduct";
 
 type ProductProps = {
-  _id: string
-  name: string
-  createdBy?: string
-  createdAt?: string
-}
+  _id: string;
+  name: string;
+  createdBy?: string;
+  createdAt?: string;
+};
 
 const Products = () => {
-  const {
-    data: allProducts,
-    refetch: refetchAllProducts,
-    isLoading: allProductsLoading,
-    error: allProductsError,
-  } = useGetAllProductsQuery(undefined)
-
-  const [searchTerm, setSearchTerm] = useState("")
-  const debouncedSearchTerm = useDebounce(searchTerm, 500)
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const {
-    data: productsBySearch,
-    error: productsBySearchError,
-    isLoading: productsBySearchLoading,
-  } = useGetProductsByNameQuery(debouncedSearchTerm)
+    data: products,
+    error: productsError,
+    isLoading: productsLoading,
+    refetch: refetchProducts,
+  } = useGetAllProductsQuery(debouncedSearchTerm);
+
+  const [createProduct] = useCreateProductMutation();
 
   const handleInputChange = (e) => {
-    setSearchTerm(e.target.value)
-  }
+    setSearchTerm(e.target.value);
+  };
 
   useEffect(() => {
     if (!debouncedSearchTerm) {
-      refetchAllProducts()
+      refetchProducts();
     }
-  }, [debouncedSearchTerm, refetchAllProducts])
+  }, [debouncedSearchTerm, refetchProducts]);
 
-  const displayedProducts = debouncedSearchTerm ? productsBySearch : allProducts
+  const handleCreateProductSuccess = async (newProduct) => {
+    try {
+      await createProduct(newProduct); // Call the mutation to create product
+      await refetchProducts(); // Refetch products after successful creation
+      console.log("Product created successfully!");
+    } catch (error) {
+      console.error("Error creating product:", error);
+    }
+  };
 
-  if (allProductsLoading || productsBySearchLoading)
-    return <p>Loading products...</p>
-  if (allProductsError || productsBySearchError) {
-    const errorMessage =
-      allProductsError?.message || productsBySearchError?.message
-    return <p>Error fetching products: {errorMessage}</p>
+  if (productsLoading) return <p>Loading products...</p>;
+  if (productsError) {
+    const errorMessage = productsError?.message;
+    return <p>Error fetching products: {errorMessage}</p>;
   }
+
+  const displayedProducts = products;
 
   return (
     <div>
+      <CreateProduct onCreateSuccess={handleCreateProductSuccess} />
       <PageNavbar
         searchTerm={searchTerm}
         searchOnChange={handleInputChange}
@@ -63,9 +69,7 @@ const Products = () => {
         buttonName="Create Product"
       />
       {debouncedSearchTerm ? (
-        <h1 className="text-lg text-secondary font-semibold">
-        Search result:
-      </h1>
+        <h1 className="text-lg text-secondary font-semibold">Search result:</h1>
       ) : (
         <h1 className="text-lg text-secondary font-semibold">
           All Products ({displayedProducts?.length})
@@ -78,7 +82,7 @@ const Products = () => {
               <ProductCard
                 productName={product.name}
                 icon={undefined}
-                loading={allProductsLoading}
+                loading={productsLoading}
                 createdBy={product.createdBy?.username}
                 createdAt={moment(product.createdAt).format("D MMM YYYY LT")}
               />
@@ -91,7 +95,7 @@ const Products = () => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Products
+export default Products;

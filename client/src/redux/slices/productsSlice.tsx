@@ -6,7 +6,12 @@ export const productsSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/api/products" }),
   endpoints: (builder) => ({
     getAllProducts: builder.query({
-      query: () => "/all",
+      query: (name) => {
+        if (name) {
+          return `/product/${name}`
+        }
+        return "/all"
+      },
       providesTags: ["Product"],
     }),
     getProductsByName: builder.query({
@@ -18,8 +23,16 @@ export const productsSlice = createApi({
       },
       providesTags: ["Product"],
     }),
+    createProduct: builder.mutation({
+      invalidatesTags: ['Product'],
+      query: (newProduct) => ({
+        url: "/create",
+        method: "POST",
+        body: newProduct,
+      })
+    })
   }),
 })
 
-export const { useGetAllProductsQuery, useGetProductsByNameQuery } =
+export const { useGetAllProductsQuery, useGetProductsByNameQuery, useCreateProductMutation } =
   productsSlice
