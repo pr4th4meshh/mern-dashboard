@@ -7,13 +7,14 @@ import Profile from "./pages/profile"
 import PrivateRoute from "./utils/PrivateRoute"
 import Products from "./pages/products"
 import Dashboard from "./pages/dashboard"
+import NotFoundComponent from "./components/ui/NotFound"
 
 function App() {
   return (
     <Routes>
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
-      <Route path="*" element={<h1>Page not found :(</h1>} />
+      <Route path="*" element={<NotFoundComponent pageTitle={"Page"} />} />
      <Route element={<PrivateRoute />} >
      <Route element={<MainLayout />}>
         <Route path="/" element={<Products />} />

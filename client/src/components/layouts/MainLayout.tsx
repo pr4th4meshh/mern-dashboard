@@ -1,11 +1,10 @@
 import React, { useState } from "react"
 import {
   LaptopOutlined,
-  NotificationOutlined,
+  ProductOutlined,
   UserOutlined,
-  LogoutOutlined,
 } from "@ant-design/icons"
-import { Avatar, Breadcrumb, Layout, Menu, theme } from "antd"
+import { Avatar, Layout, Menu, theme } from "antd"
 import { Outlet, useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
 
@@ -15,7 +14,7 @@ const items = [
   {
     label: "Products",
     key: "/",
-    icon: <NotificationOutlined />,
+    icon: <ProductOutlined />,
   },
   {
     label: "Dashboard",
@@ -85,11 +84,6 @@ const MainLayout: React.FC = () => {
           />
         </Sider>
         <Layout>
-          {/* <Breadcrumb style={{ margin: "16px 0" }}>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item>List</Breadcrumb.Item>
-            <Breadcrumb.Item>App</Breadcrumb.Item>
-          </Breadcrumb> */}
           <Content
             style={{
               padding: 24,

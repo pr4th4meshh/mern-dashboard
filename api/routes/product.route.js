@@ -2,17 +2,18 @@ import express from "express"
 import {
   createProduct,
   getAllProducts,
-  getProductById,
   deleteProduct,
   updateProduct,
+  getProductByName,
 } from "../controllers/product.controller.js"
 import { verifyToken } from "../middlewares/authMiddleware.js"
 
 const router = express.Router()
 
 router.post("/create", verifyToken(["admin", "superadmin", "developer"]), createProduct)
-router.get("/events", getAllProducts)
+router.get("/all", getAllProducts)
 router.put("/update/:id", verifyToken(["admin", "superadmin", "developer"]), updateProduct)
+router.get("/product/:name", getProductByName)
 router.delete(
   "/delete/:id",
   verifyToken(["admin", "superadmin", "developer"]),

@@ -2,21 +2,20 @@ import Product from "../models/product.model.js";
 
 export const getAllProducts = async (req, res, next) => {
     try {
-      const products = await Product.find();
+      const products = await Product.find().populate('createdBy', 'username').exec();
       res.status(200).json(products);
     } catch (error) {
       next(error);
     }
   };
   
-  export const getProductById = async (req, res, next) => {
-    const productId = req.params.id;
+  export const getProductByName = async (req, res, next) => {
+    const { name } = req.params;
     try {
-      const product = await Product.findById(productId);
-      if (!product) {
-        return res.status(404).json({ message: 'Product not found' });
-      }
-      res.status(200).json(product);
+      const products = await Product.find({ name: { $regex: name, $options: "i" } })
+        .populate("createdBy", "username")
+        .exec();
+      res.status(200).json(products);
     } catch (error) {
       next(error);
     }
