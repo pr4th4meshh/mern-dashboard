@@ -1,8 +1,20 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { setUser } from './userSlice'; // Import actions from userSlice
+import { BASE_URL } from "../../env";
 
 export const authSlice = createApi({
   reducerPath: "authSlice",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/api/auth" }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: BASE_URL,
+    credentials: "include",
+    prepareHeaders: (headers, { getState }: any) => {
+      const token = getState().user.token;
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
   tagTypes: ["User"],
   endpoints: (builder) => ({
     signup: builder.mutation({
@@ -18,14 +30,22 @@ export const authSlice = createApi({
         method: "POST",
         body: credentials,
       }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setUser({ user: data.user, accessToken: data.token })); // Ensure correct field names
+        } catch (error) {
+          // Handle error
+        }
+      },
     }),
     signout: builder.mutation({
       query: () => ({
         url: "/signout",
-        method: "POST"
-      })
-    })
+        method: "POST",
+      }),
+    }),
   }),
-})
+});
 
-export const { useSignupMutation, useSigninMutation, useSignoutMutation } = authSlice
+export const { useSignupMutation, useSigninMutation, useSignoutMutation } = authSlice;

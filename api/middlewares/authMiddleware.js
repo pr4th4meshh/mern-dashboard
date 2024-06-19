@@ -3,7 +3,7 @@ import User from "../models/user.model.js"
 
 export const verifyToken = (roles) => async (req, res, next) => {
   const token = req.cookies.access_token
-  if (!token) return res.status(401).json({ message: "Unauthorized" })
+  if (!token) return res.status(401).json({ message: "Token not found!" })
 
   try {
     const decoded = jwt.verify(token, "thisismyjwtsecretkeyforthisapp")

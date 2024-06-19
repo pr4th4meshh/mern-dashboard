@@ -1,45 +1,34 @@
-import React, { useState } from "react"
-import type { FormProps } from "antd"
-import { Button, Form, Input, message } from "antd"
-import { useSigninMutation } from "../../redux/slices/authSlice"
-import { useNavigate } from "react-router-dom"
-import { useDispatch } from "react-redux"
-import { setUser } from "../../redux/slices/userSlice"
+import React from "react";
+import { Form, Input, Button, message } from "antd";
+import { useSigninMutation } from "../../redux/slices/authSlice";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/slices/userSlice";
 
-type FieldType = {
-  email?: string
-  password?: string
-  remember?: string
-  confirmPassword?: string
-}
-
-const Login: React.FC = () => {
-  const [form] = Form.useForm()
-  const [signin, { isLoading }] = useSigninMutation()
-
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+const Login = () => {
+  const [form] = Form.useForm();
+  const [signin, { isLoading }] = useSigninMutation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onFinish = async (values) => {
     try {
-      const user = await signin(values).unwrap()
-      message.success("Login successfull!")
-      dispatch(setUser(user))
-      form.resetFields()
-      navigate("/")
+      const user = await signin(values).unwrap();
+      dispatch(setUser({ user: user, accessToken: user.token }));
+      message.success("Login successful!");
+      form.resetFields();
+      navigate("/");
     } catch (error) {
-      message.error("Invalid credentials. Please try again!")
-      console.log("Invalid credentials. Please try again!")
+      message.error(error?.data?.message || "Signin failed");
     }
-  }
+  };
 
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-    errorInfo
-  ) => {
-    console.log("Failed:", errorInfo)
-  }
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
+
   return (
-    <div className="flex justify-center items-center h-[100vh] bg-primary ">
+    <div className="flex justify-center items-center h-[100vh] bg-primary">
       <div>
         <h1 className="text-2xl text-center pb-10">Login to continue</h1>
         <Form
@@ -51,15 +40,15 @@ const Login: React.FC = () => {
           autoComplete="off"
           form={form}
         >
-          <Form.Item<FieldType>
+          <Form.Item
             label="Email"
             name="email"
-            rules={[{ required: true, message: "Please input your username!" }]}
+            rules={[{ required: true, message: "Please input your email!" }]}
           >
             <Input placeholder="Enter email.." className="w-full" />
           </Form.Item>
 
-          <Form.Item<FieldType>
+          <Form.Item
             label="Password"
             name="password"
             rules={[{ required: true, message: "Please input your password!" }]}
@@ -80,7 +69,7 @@ const Login: React.FC = () => {
         </Form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

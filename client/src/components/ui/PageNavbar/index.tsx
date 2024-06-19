@@ -16,6 +16,7 @@ const PageNavbar = ({
   buttonName,
   searchOnChange,
   searchTerm,
+  onClick
 }: PageNavbarProps) => {
   const { Search } = Input
   return (
@@ -30,7 +31,7 @@ const PageNavbar = ({
             className="px-6"
           />
         )}
-        <ButtonComponent cn="" onClick={null} name={buttonName} />
+        <ButtonComponent cn="" onClick={onClick} name={buttonName} />
       </div>
     </Header>
   )
