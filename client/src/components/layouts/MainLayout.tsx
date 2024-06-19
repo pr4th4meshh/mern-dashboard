@@ -5,7 +5,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons"
 import { Avatar, Layout, Menu, theme } from "antd"
-import { Outlet, useNavigate } from "react-router-dom"
+import { Link, Outlet, useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
 
 const { Header, Content, Sider } = Layout
@@ -54,7 +54,7 @@ const MainLayout: React.FC = () => {
               icon={<UserOutlined />}
               className="mr-2 bg-gray-500"
             />
-            <h1 className="text-lg">
+            <h1 className="sm:text-md md:text-lg">
               Hello, {user.username} ||{" "}
               {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
             </h1>
@@ -65,16 +65,20 @@ const MainLayout: React.FC = () => {
         <Sider
           onCollapse={() => setCollapsed(!collapsed)}
           collapsible
-            width={200}
-            style={{ background: colorBgContainer }}
+          width={200}
+          style={{ background: colorBgContainer }}
+          breakpoint="md"
+          collapsedWidth="70"
         >
-          {collapsed ? (
-            <h1 className="text-xl flex justify-center py-10">P4</h1>
-          ) : (
-            <h1 className="text-xl flex justify-center py-10">
-              Pr4th4mesh Logo
-            </h1>
-          )}
+          <Link to="/">
+            {collapsed ? (
+              <h1 className="text-xl flex justify-center py-10">P4</h1>
+            ) : (
+              <h1 className="text-xl flex justify-center py-10">
+                Pr4th4mesh Logo
+              </h1>
+            )}
+          </Link>
           <Menu
             mode="inline"
             defaultSelectedKeys={[window.location.pathname]}

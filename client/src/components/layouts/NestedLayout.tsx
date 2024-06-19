@@ -43,17 +43,12 @@ const NestedLayout = ({ children, createdAt, createdBy, title }) => {
 
   return (
     <Layout>
-      <Header
-        className=" bg-white border-b-[2px] "
-      >
-          <div className="flex flex-col ">
-            <span className="text-xl font-bold">{title}</span>
-              <span className="text-sm text-gray-600">
-                Created by {createdBy} on {createdAt}
-              </span>
-          </div>
-
-      </Header>
+        <div className="flex flex-col min-h-min bg-white border-b-[2px] py-3 justify-center">
+          <span className="text-xl font-bold">{title}</span>
+          <span className="text-sm text-gray-600">
+            Created by {createdBy} on {createdAt}
+          </span>
+        </div>
       <Layout>
         {/* <Sider width={200} style={{ background: colorBgContainer }}>
           <Menu
@@ -69,7 +64,6 @@ const NestedLayout = ({ children, createdAt, createdBy, title }) => {
             style={{
               padding: 0,
               margin: 0,
-              minHeight: 280,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}

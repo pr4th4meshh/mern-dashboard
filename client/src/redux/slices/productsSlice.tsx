@@ -32,7 +32,15 @@ export const productsSlice = createApi({
         body: newProduct,
       }),
     }),
+    getProductById: builder.query({
+      query: (id) => `/product/id/${id}`,
+      providesTags: ["Product"],
+    }),
   }),
 })
 
-export const { useGetAllProductsQuery, useCreateProductMutation } = productsSlice
+export const {
+  useGetAllProductsQuery,
+  useCreateProductMutation,
+  useGetProductByIdQuery,
+} = productsSlice

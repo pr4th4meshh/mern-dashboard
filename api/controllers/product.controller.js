@@ -20,6 +20,19 @@ export const getAllProducts = async (req, res, next) => {
       next(error);
     }
   };
+
+  export const getProductById = async (req, res, next) => {
+    const productId = req.params.id;
+    try {
+      const product = await Product.findById(productId).populate('createdBy', 'username').exec();;
+      if (!product) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
+      res.status(200).json(product);
+    } catch (error) {
+      next(error);
+    }
+  };
   
   export const createProduct = async (req, res, next) => {
     const { name, description, price } = req.body;

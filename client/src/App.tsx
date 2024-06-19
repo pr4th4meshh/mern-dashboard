@@ -8,6 +8,7 @@ import PrivateRoute from "./utils/PrivateRoute"
 import Products from "./pages/products"
 import Dashboard from "./pages/dashboard"
 import NotFoundComponent from "./components/ui/NotFound"
+import SingleProduct from "./pages/single-product/SingleProduct"
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/" element={<Products />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/product/id/:id" element={<SingleProduct />} />
       </Route>
      </Route>
     </Routes>

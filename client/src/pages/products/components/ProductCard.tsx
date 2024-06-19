@@ -2,6 +2,7 @@ import { ProductOutlined } from "@ant-design/icons"
 import { Avatar, Card, Skeleton } from "antd"
 import Meta from "antd/es/card/Meta"
 import { Product } from "../../../interfaces/ProductInterface"
+import { Link } from "react-router-dom"
 
 const ProductCard = ({
   productName,
@@ -9,6 +10,7 @@ const ProductCard = ({
   createdBy,
   createdAt,
   loading,
+  productId
 }: Product) => {
   return (
     <>
@@ -21,6 +23,7 @@ const ProductCard = ({
           />
         </Skeleton>
       ) : (
+        <Link to={`/product/id/${productId}`}>
         <Card className="w-full mt-4 min-h-min min-w-min">
           <div className="flex items-center xs:flex-col lg:flex-row">
             <Avatar icon={<ProductOutlined /> || icon} size={50} />
@@ -34,11 +37,12 @@ const ProductCard = ({
                 Created by {createdBy || "Insomnia"}
               </span>
               <span className="text-sm text-gray-500">
-                Created at {createdAt}
+                Created on {createdAt}
               </span>
             </div>
           </div>
         </Card>
+        </Link>
       )}
     </>
   )

@@ -73,6 +73,7 @@ const Products = () => {
           displayedProducts.map((product: ProductProps) => (
             <div className="m-3" key={product._id}>
               <ProductCard
+              productId={product._id}
                 productName={product.name}
                 icon={undefined}
                 loading={productsLoading}
