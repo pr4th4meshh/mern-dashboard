@@ -21,7 +21,7 @@ const PageNavbar = ({
   const { Search } = Input
   return (
     <Header className="bg-white border-b mb-5">
-      <div className="flex justify-between">
+      <div className="flex">
         {canSearch && (
           <Search
             size="large"
@@ -29,6 +29,7 @@ const PageNavbar = ({
             onChange={searchOnChange}
             value={searchTerm}
             className="px-6"
+            enterButton
           />
         )}
         <ButtonComponent cn="" onClick={onClick} name={buttonName} />

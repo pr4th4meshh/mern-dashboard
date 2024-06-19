@@ -19,7 +19,7 @@ const Login = () => {
       form.resetFields();
       navigate("/");
     } catch (error) {
-      message.error(error?.data?.message || "Signin failed");
+      message.error(error?.data?.message || "Invalid Credentials, please try again");
     }
   };
 

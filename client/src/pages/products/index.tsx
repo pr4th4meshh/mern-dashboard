@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
   useGetAllProductsQuery,
 } from "../../redux/slices/productsSlice";
@@ -68,7 +68,7 @@ const Products = () => {
           All Products ({displayedProducts.length})
         </h1>
       )}
-      <div className="grid grid-cols-4">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {displayedProducts.length > 0 ? (
           displayedProducts.map((product: ProductProps) => (
             <div className="m-3" key={product._id}>

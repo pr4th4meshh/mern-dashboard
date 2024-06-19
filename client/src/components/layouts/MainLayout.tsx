@@ -65,8 +65,8 @@ const MainLayout: React.FC = () => {
         <Sider
           onCollapse={() => setCollapsed(!collapsed)}
           collapsible
-          width={200}
-          style={{ background: colorBgContainer }}
+            width={200}
+            style={{ background: colorBgContainer }}
         >
           {collapsed ? (
             <h1 className="text-xl flex justify-center py-10">P4</h1>
