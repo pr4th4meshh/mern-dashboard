@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import {
   useDeleteProductByIdMutation,
   useGetProductByIdQuery,
+  useUpdateProductByIdMutation,
 } from "../../redux/slices/productsSlice"
 import { Button, Form, Input, Popconfirm, message } from "antd"
 import { useMemo } from "react"
@@ -10,10 +11,11 @@ import moment from "moment"
 
 const SingleProduct = () => {
   const { id } = useParams()
-  const { data: singleProductData } = useGetProductByIdQuery(id)
+  const { data: singleProductData, refetch } = useGetProductByIdQuery(id)
   console.log(singleProductData)
 
   const [deleteProduct] = useDeleteProductByIdMutation()
+  const [updateProduct] = useUpdateProductByIdMutation()
   const navigate = useNavigate()
 
   const handleDelete = async () => {
@@ -25,6 +27,21 @@ const SingleProduct = () => {
       message.error(error.data.message)
     }
   }
+
+  const handleUpdate = async (values) => {
+    try {
+      await updateProduct({ id, ...values }).unwrap();
+      message.success('Product updated successfully!');
+      refetch();
+    } catch (error) {
+      if (error.data) {
+        message.error(error.data.message || 'Error updating product');
+      } else {
+        message.error('An unknown error occurred');
+      }
+      console.error('Error updating product:', error);
+    }
+  };
 
   const fields = useMemo(() => {
     if (!singleProductData)
@@ -56,6 +73,7 @@ const SingleProduct = () => {
           autoComplete="off"
           form={form}
           fields={fields}
+          onFinish={handleUpdate}
         >
           <Form.Item
             label="Name"
@@ -110,7 +128,6 @@ const SingleProduct = () => {
                 className="w-full bg-green-600 text-white mx-2"
                 type="primary"
                 htmlType="submit"
-                loading={null}
               >
                 Update
               </Button>
