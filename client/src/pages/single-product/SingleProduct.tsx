@@ -4,18 +4,19 @@ import {
   useGetProductByIdQuery,
   useUpdateProductByIdMutation,
 } from "../../redux/slices/productsSlice"
-import { Button, Form, Input, Popconfirm, message } from "antd"
+import { Button, Form, Input, Popconfirm, Tag, message } from "antd"
 import { useMemo } from "react"
 import NestedLayout from "../../components/layouts/NestedLayout"
 import moment from "moment"
+import { useSelector } from "react-redux"
 
 const SingleProduct = () => {
   const { id } = useParams()
   const { data: singleProductData, refetch } = useGetProductByIdQuery(id)
-  console.log(singleProductData)
-
   const [deleteProduct] = useDeleteProductByIdMutation()
   const [updateProduct] = useUpdateProductByIdMutation()
+
+  const user = useSelector((state) => state.user.user)
   const navigate = useNavigate()
 
   const handleDelete = async () => {
@@ -30,18 +31,18 @@ const SingleProduct = () => {
 
   const handleUpdate = async (values) => {
     try {
-      await updateProduct({ id, ...values }).unwrap();
-      message.success('Product updated successfully!');
-      refetch();
+      await updateProduct({ id, ...values }).unwrap()
+      message.success("Product updated successfully!")
+      refetch()
     } catch (error) {
       if (error.data) {
-        message.error(error.data.message || 'Error updating product');
+        message.error(error.data.message || "Error updating product")
       } else {
-        message.error('An unknown error occurred');
+        message.error("An unknown error occurred")
       }
-      console.error('Error updating product:', error);
+      console.error("Error updating product:", error)
     }
-  };
+  }
 
   const fields = useMemo(() => {
     if (!singleProductData)
@@ -74,6 +75,7 @@ const SingleProduct = () => {
           form={form}
           fields={fields}
           onFinish={handleUpdate}
+          disabled={user.role === 'user'}
         >
           <Form.Item
             label="Name"
@@ -110,29 +112,33 @@ const SingleProduct = () => {
             />
           </Form.Item>
 
-          <Form.Item>
-            <div className="flex justify-between">
-              <Popconfirm
-                title="Delete Product"
-                description="Are you sure to delete this product?"
-                onConfirm={handleDelete}
-              >
-                <Button
-                className="w-full mx-2"
-                danger
-              >
-                Delete
-              </Button>
-              </Popconfirm>
-              <Button
-                className="w-full bg-green-600 text-white mx-2"
-                type="primary"
-                htmlType="submit"
-              >
-                Update
-              </Button>
+          {
+          user.role === "user" ? (
+            <div className="flex justify-center">
+              <Tag className="flex w-min text-lg" color="volcano" >You are only allowed to view the product as a User.</Tag>
             </div>
-          </Form.Item>
+          ) : (
+            <Form.Item>
+              <div className="flex justify-between">
+                <Popconfirm
+                  title="Delete Product"
+                  description="Are you sure to delete this product?"
+                  onConfirm={handleDelete}
+                >
+                  <Button className="w-full mx-2" danger>
+                    Delete
+                  </Button>
+                </Popconfirm>
+                <Button
+                  className="w-full bg-green-600 text-white mx-2"
+                  type="primary"
+                  htmlType="submit"
+                >
+                  Update
+                </Button>
+              </div>
+            </Form.Item>
+          )}
         </Form>
       </div>
     </NestedLayout>

@@ -1,6 +1,7 @@
 import { Input } from "antd"
 import { Header } from "antd/es/layout/layout"
 import ButtonComponent from "../ButtonComponent"
+import { useSelector } from "react-redux"
 
 type PageNavbarProps = {
   title: string
@@ -8,6 +9,17 @@ type PageNavbarProps = {
   buttonName: string
   searchOnChange: () => void
   searchTerm: string
+  onClick: () => void
+}
+
+interface UserProps {
+  role: string
+}
+interface StateProps {
+  state: string
+  user: {
+    user: UserProps
+  }
 }
 
 const PageNavbar = ({
@@ -16,9 +28,10 @@ const PageNavbar = ({
   buttonName,
   searchOnChange,
   searchTerm,
-  onClick
+  onClick,
 }: PageNavbarProps) => {
   const { Search } = Input
+  const user = useSelector((state: StateProps) => state.user.user)
   return (
     <Header className="bg-white border-b mb-5">
       <div className="flex">
@@ -32,7 +45,11 @@ const PageNavbar = ({
             enterButton
           />
         )}
-        <ButtonComponent cn="" onClick={onClick} name={buttonName} />
+        {user?.role === "user" ? (
+          ""
+        ) : (
+          <ButtonComponent cn="" onClick={onClick} name={buttonName} />
+        )}
       </div>
     </Header>
   )
