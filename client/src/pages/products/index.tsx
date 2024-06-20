@@ -11,6 +11,7 @@ import CreateProduct from "./components/CreateProduct";
 import { useDispatch } from "react-redux";
 import { toggleModal } from "../../redux/slices/configurationSlice";
 import { MODAL_STATE } from "../../common/states";
+import Loading from "../../components/ui/Loading";
 
 type ProductProps = {
   _id: string;
@@ -42,7 +43,7 @@ const Products = () => {
     }
   }, [debouncedSearchTerm, refetchProducts]);
 
-  if (productsLoading) return <p>Loading products...</p>;
+  if (productsLoading) return <Loading />;
   if (productsError) {
     const errorMessage = productsError?.message;
     return <p>Error fetching products: {errorMessage}</p>;
