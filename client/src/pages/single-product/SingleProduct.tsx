@@ -1,14 +1,30 @@
-import { useParams } from "react-router-dom";
-import { useGetProductByIdQuery } from "../../redux/slices/productsSlice";
-import { Button, Form, Input } from "antd";
-import { useMemo } from "react";
-import NestedLayout from "../../components/layouts/NestedLayout";
-import moment from "moment";
+import { useNavigate, useParams } from "react-router-dom"
+import {
+  useDeleteProductByIdMutation,
+  useGetProductByIdQuery,
+} from "../../redux/slices/productsSlice"
+import { Button, Form, Input, Popconfirm, message } from "antd"
+import { useMemo } from "react"
+import NestedLayout from "../../components/layouts/NestedLayout"
+import moment from "moment"
 
 const SingleProduct = () => {
-  const { id } = useParams();
-  const { data: singleProductData, refetch } = useGetProductByIdQuery(id);
-  console.log(singleProductData);
+  const { id } = useParams()
+  const { data: singleProductData } = useGetProductByIdQuery(id)
+  console.log(singleProductData)
+
+  const [deleteProduct] = useDeleteProductByIdMutation()
+  const navigate = useNavigate()
+
+  const handleDelete = async () => {
+    try {
+      await deleteProduct(id)
+      message.success("Product deleted")
+      navigate("/")
+    } catch (error) {
+      message.error(error.data.message)
+    }
+  }
 
   const fields = useMemo(() => {
     if (!singleProductData)
@@ -16,15 +32,15 @@ const SingleProduct = () => {
         { name: ["name"], value: `Loading..` },
         { name: ["description"], value: `Loading..` },
         { name: ["price"], value: `Loading..` },
-      ];
+      ]
     return [
       { name: ["name"], value: `${singleProductData?.name}` },
       { name: ["description"], value: `${singleProductData?.description}` },
       { name: ["price"], value: singleProductData?.price },
-    ];
-  }, [singleProductData]);
+    ]
+  }, [singleProductData])
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
   return (
     <NestedLayout
@@ -58,7 +74,10 @@ const SingleProduct = () => {
               { required: true, message: "Please input product description!" },
             ]}
           >
-            <Input placeholder="Enter product description.." className="w-full" />
+            <Input
+              placeholder="Enter product description.."
+              className="w-full"
+            />
           </Form.Item>
 
           <Form.Item
@@ -75,14 +94,18 @@ const SingleProduct = () => {
 
           <Form.Item>
             <div className="flex justify-between">
-              <Button
-                className="w-full bg-red-500 text-white mx-2"
-                type="primary"
-                htmlType="submit"
-                loading={null}
+              <Popconfirm
+                title="Delete Product"
+                description="Are you sure to delete this product?"
+                onConfirm={handleDelete}
+              >
+                <Button
+                className="w-full mx-2"
+                danger
               >
                 Delete
               </Button>
+              </Popconfirm>
               <Button
                 className="w-full bg-green-600 text-white mx-2"
                 type="primary"
@@ -96,7 +119,7 @@ const SingleProduct = () => {
         </Form>
       </div>
     </NestedLayout>
-  );
-};
+  )
+}
 
-export default SingleProduct;
+export default SingleProduct

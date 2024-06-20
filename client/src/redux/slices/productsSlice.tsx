@@ -36,6 +36,12 @@ export const productsSlice = createApi({
       query: (id) => `/product/id/${id}`,
       providesTags: ["Product"],
     }),
+    deleteProductById: builder.mutation({
+      query: (id) => ({
+        url: `/delete/${id}`,
+        method: "DELETE",
+      })
+    })
   }),
 })
 
@@ -43,4 +49,5 @@ export const {
   useGetAllProductsQuery,
   useCreateProductMutation,
   useGetProductByIdQuery,
+  useDeleteProductByIdMutation
 } = productsSlice

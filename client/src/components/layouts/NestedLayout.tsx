@@ -1,54 +1,42 @@
-import React from "react"
-import {
-  LaptopOutlined,
-  NotificationOutlined,
-  UserOutlined,
-} from "@ant-design/icons"
-import type { MenuProps } from "antd"
-import { Breadcrumb, Layout, Menu, theme } from "antd"
+import { Layout, theme } from "antd"
+import { ReactNode } from "react"
+import { LeftCircleOutlined } from "@ant-design/icons"
 
-const { Header, Content, Sider } = Layout
+const { Content } = Layout
 
-const items1: MenuProps["items"] = ["1", "2", "3"].map((key) => ({
-  key,
-  label: `nav ${key}`,
-}))
+type NestedLayoutProps = {
+  children: ReactNode
+  createdAt: string
+  createdBy: string
+  title: string
+}
 
-const items2: MenuProps["items"] = [
-  UserOutlined,
-  LaptopOutlined,
-  NotificationOutlined,
-].map((icon, index) => {
-  const key = String(index + 1)
-
-  return {
-    key: `sub${key}`,
-    icon: React.createElement(icon),
-    label: `subnav ${key}`,
-
-    children: new Array(4).fill(null).map((_, j) => {
-      const subKey = index * 4 + j + 1
-      return {
-        key: subKey,
-        label: `option${subKey}`,
-      }
-    }),
-  }
-})
-
-const NestedLayout = ({ children, createdAt, createdBy, title }) => {
+const NestedLayout = ({
+  children,
+  createdAt,
+  createdBy,
+  title,
+}: NestedLayoutProps) => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken()
 
   return (
     <Layout>
-        <div className="flex flex-col min-h-min bg-white border-b-[2px] py-3 justify-center">
+      <div className="min-h-min flex flex-row bg-white border-b-[2px] py-3 items-center">
+        <LeftCircleOutlined
+          className="text-2xl mr-4 text-secondary"
+          onClick={() => {
+            history.back()
+          }}
+        />
+        <div className="flex flex-col ">
           <span className="text-xl font-bold">{title}</span>
           <span className="text-sm text-gray-600">
             Created by {createdBy} on {createdAt}
           </span>
         </div>
+      </div>
       <Layout>
         {/* <Sider width={200} style={{ background: colorBgContainer }}>
           <Menu
