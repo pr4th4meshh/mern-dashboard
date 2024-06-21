@@ -1,11 +1,42 @@
-import { Popconfirm, Space, Table, Tag, message } from "antd"
-import {DeleteOutlined} from "@ant-design/icons"
+import { useEffect, useState } from "react"
 import {
-  useDeleteUserMutation,
+  Space,
+  Table,
+  Tag,
+  message,
+  Form,
+  Input,
+  Button,
+  Select,
+  Popconfirm,
+} from "antd"
+import { DeleteOutlined } from "@ant-design/icons"
+import {
   useGetAllUsersQuery,
+  useDeleteUserMutation,
+  useUpdateUserMutation,
 } from "../../redux/slices/usersSlice"
 import Loading from "../../components/ui/Loading"
-import { useEffect } from "react"
+import ModalComponent from "../../components/ui/Modal"
+import { useDispatch, useSelector } from "react-redux"
+import {
+  toggleModal,
+  selectConfiguration,
+} from "../../redux/slices/configurationSlice"
+import { MODAL_STATE } from "../../common/states"
+
+interface Roles {
+  user: string
+  admin: string
+  superadmin: string
+  developer: string
+}
+interface UserProps {
+  _id: string
+  username: string
+  email: string
+  role: Roles[]
+}
 
 const Users = () => {
   const {
@@ -14,22 +45,76 @@ const Users = () => {
     isError,
     refetch,
   } = useGetAllUsersQuery(undefined)
-
   const [deleteUser] = useDeleteUserMutation()
+  const [updateUserMutation] = useUpdateUserMutation()
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const Configuration = useSelector(selectConfiguration)
+  const [selectedUser, setSelectedUser] = useState<UserProps | null>(null)
+  const [isChangePassword, setIsChangePassword] = useState(false)
 
   useEffect(() => {
     refetch()
   }, [refetch])
 
-  const handleDeleteUser = async (userId) => {
+  const handleEdit = (user: UserProps) => {
+    setSelectedUser(user)
+    setIsChangePassword(false)
+    dispatch(toggleModal(MODAL_STATE.UPDATE_USER_MODAL))
+    form.setFieldsValue({
+      username: user.username,
+      email: user.email,
+      role: user.role,
+    })
+  }
+
+  const handleChangePassword = (user: UserProps) => {
+    setSelectedUser(user)
+    setIsChangePassword(true)
+    dispatch(toggleModal(MODAL_STATE.UPDATE_USER_MODAL))
+    form.resetFields()
+  }
+
+  const handleDeleteUser = async (userId: string) => {
     try {
       await deleteUser(userId).unwrap()
-      refetch()
       message.success("User deleted successfully!")
+      refetch()
     } catch (error) {
-      message.error(error.mesage || "Error while deleting user")
+      message.error(error.message || "Error while deleting user")
     }
   }
+
+  const handleUpdateUser = async (values) => {
+    try {
+      if (isChangePassword) {
+        if (values.newPassword !== values.confirmPassword) {
+          message.error("Passwords do not match!")
+          return
+        }
+        await updateUserMutation({
+          id: selectedUser._id,
+          ...values,
+          password: values.newPassword,
+        }).unwrap()
+        message.success("Password updated successfully!")
+      } else {
+        await updateUserMutation({ id: selectedUser._id, ...values }).unwrap()
+        message.success("User updated successfully!")
+      }
+      refetch()
+      dispatch(toggleModal(MODAL_STATE.UPDATE_USER_MODAL))
+    } catch (error) {
+      message.error(error.message || "Error updating user")
+    }
+  }
+
+  const roles = [
+    { value: "user", title: "User" },
+    { value: "admin", title: "Admin" },
+    { value: "superadmin", title: "Superadmin" },
+    { value: "developer", title: "Developer" },
+  ]
 
   const columns = [
     {
@@ -68,14 +153,22 @@ const Users = () => {
     {
       title: "Action",
       key: "action",
-      render: (record) => (
+      render: (record: UserProps) => (
         <Space size="middle">
-          <a className="text-blue-500">Edit</a>
+          <a className="text-blue-500" onClick={() => handleEdit(record)}>
+            Edit
+          </a>
+          <a
+            className="text-yellow-600"
+            onClick={() => handleChangePassword(record)}
+          >
+            Change password
+          </a>
           <Popconfirm
             title="Delete user"
             description="Are you sure to delete this user?"
             onConfirm={() => handleDeleteUser(record._id)}
-            icon={<DeleteOutlined style={{color: "red"}} />}
+            icon={<DeleteOutlined style={{ color: "red" }} />}
             okText="Delete"
             okType="danger"
             cancelText="Cancel"
@@ -88,10 +181,10 @@ const Users = () => {
   ]
 
   const pagination = {
-    pageSize: 8, // Number of items per page
-    total: getAllUsers.length, // Total number of items
-    showTotal: (total: number, range: [number, number]) =>
-      `Showing ${range[0]}-${range[1]} of ${total} items`, // Display text for total items
+    pageSize: 8,
+    total: getAllUsers?.length,
+    showTotal: (total, range) =>
+      `Showing ${range[0]}-${range[1]} of ${total} items`,
   }
 
   if (isLoading) return <Loading />
@@ -105,6 +198,97 @@ const Users = () => {
         dataSource={getAllUsers}
         columns={columns}
       />
+      <ModalComponent
+        modalTitle={isChangePassword ? "Change Password" : "Update User"}
+        open={Configuration[MODAL_STATE.UPDATE_USER_MODAL]}
+        onCancel={() => dispatch(toggleModal(MODAL_STATE.UPDATE_USER_MODAL))}
+      >
+        <Form
+          className="p-5"
+          form={form}
+          onFinish={handleUpdateUser}
+          layout="vertical"
+          initialValues={{
+            username: selectedUser?.username,
+            email: selectedUser?.email,
+            role: selectedUser?.role,
+          }}
+        >
+          {!isChangePassword ? (
+            <>
+              <Form.Item
+                label="Username"
+                name="username"
+                rules={[
+                  { required: true, message: "Please input the username!" },
+                ]}
+              >
+                <Input placeholder="Enter username.." />
+              </Form.Item>
+              <Form.Item
+                label="Email"
+                name="email"
+                rules={[{ required: true, message: "Please input the email!" }]}
+              >
+                <Input placeholder="Enter email.." />
+              </Form.Item>
+              <Form.Item
+                label="Role"
+                name="role"
+                rules={[{ required: true, message: "Please select a role!" }]}
+              >
+                <Select placeholder="Select a role..">
+                  {roles.map((role) => (
+                    <Select.Option key={role.value} value={role.value}>
+                      {role.title}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </>
+          ) : (
+            <>
+              <Form.Item
+                label="New Password"
+                name="newPassword"
+                rules={[
+                  { required: true, message: "Please enter a new password" },
+                ]}
+              >
+                <Input.Password
+                  visibilityToggle={false}
+                  placeholder="Enter new password.."
+                />
+              </Form.Item>
+              <Form.Item
+                label="Confirm Password"
+                name="confirmPassword"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please confirm your new password",
+                  },
+                ]}
+              >
+                <Input.Password
+                  visibilityToggle={false}
+                  placeholder="Confirm new password.."
+                />
+              </Form.Item>
+            </>
+          )}
+          <Form.Item>
+            <Button
+              className="bg-secondary w-full"
+              type="primary"
+              htmlType="submit"
+              loading={isLoading}
+            >
+              {isChangePassword ? "Change Password" : "Update"}
+            </Button>
+          </Form.Item>
+        </Form>
+      </ModalComponent>
     </div>
   )
 }

@@ -3,8 +3,8 @@ import { MODAL_STATE } from "../../common/states";
 
 const initialState = {
   [MODAL_STATE.CREATE_PRODUCT_MODAL]: false,
-  [MODAL_STATE.DELETE_PRODUCT_MODAL]: false,
   [MODAL_STATE.UPDATE_PRODUCT_MODAL]: false,
+  [MODAL_STATE.UPDATE_USER_MODAL]: false,
   product: null,
 };
 
@@ -17,8 +17,8 @@ const slice = createSlice({
         case MODAL_STATE.CREATE_PRODUCT_MODAL:
           state[MODAL_STATE.CREATE_PRODUCT_MODAL] = !state[MODAL_STATE.CREATE_PRODUCT_MODAL];
           break;
-        case MODAL_STATE.DELETE_PRODUCT_MODAL:
-          state[MODAL_STATE.DELETE_PRODUCT_MODAL] = !state[MODAL_STATE.DELETE_PRODUCT_MODAL];
+          case MODAL_STATE.UPDATE_USER_MODAL:
+          state[MODAL_STATE.UPDATE_USER_MODAL] = !state[MODAL_STATE.UPDATE_USER_MODAL];
           break;
         case MODAL_STATE.UPDATE_PRODUCT_MODAL:
           state[MODAL_STATE.UPDATE_PRODUCT_MODAL] = !state[MODAL_STATE.UPDATE_PRODUCT_MODAL];
