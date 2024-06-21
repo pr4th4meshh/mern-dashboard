@@ -1,15 +1,13 @@
 import React, { useState } from "react"
 import {
-  LaptopOutlined,
-  ProductOutlined,
   UserOutlined,
-  UsergroupAddOutlined
 } from "@ant-design/icons"
 import { Avatar, Layout, Menu, theme } from "antd"
 import { Link, Outlet, useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
 import { Footer } from "antd/es/layout/layout"
 import { selectCurrentUser } from "../../redux/slices/userSlice"
+import { getNavItems } from "../../common/siderLinks"
 
 const { Header, Content, Sider } = Layout
 
@@ -22,29 +20,7 @@ const MainLayout: React.FC = () => {
 
   const navigate = useNavigate()
   const user = useSelector(selectCurrentUser)
-
-  const items = [
-    {
-      label: "Products",
-      key: "/",
-      icon: <ProductOutlined />,
-    },
-    {
-      label: "Dashboard",
-      key: "/dashboard",
-      icon: <LaptopOutlined />,
-    },
-    {
-      label: "Users",
-      key: `/users`,
-      icon: <UsergroupAddOutlined />,
-    },
-    {
-      label: "Profile",
-      key: `/profile/${user._id}`,
-      icon: <UserOutlined />,
-    },
-  ]
+  const NAV_ITEMS = getNavItems(user)
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -91,7 +67,7 @@ const MainLayout: React.FC = () => {
             defaultSelectedKeys={[window.location.pathname]}
             onClick={({ keyPath }) => navigate(`${keyPath}`)}
             style={{ height: "100%", borderRight: 0 }}
-            items={items}
+            items={NAV_ITEMS}
           />
         </Sider>
         <Layout>
