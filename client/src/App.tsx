@@ -9,6 +9,7 @@ import Products from "./pages/products"
 import Dashboard from "./pages/dashboard"
 import NotFoundComponent from "./components/ui/NotFound"
 import SingleProduct from "./pages/single-product/SingleProduct"
+import Users from "./pages/users"
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
      <Route element={<MainLayout />}>
         <Route path="/" element={<Products />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/users" element={<Users />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/product/id/:id" element={<SingleProduct />} />
       </Route>

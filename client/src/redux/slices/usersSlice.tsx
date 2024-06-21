@@ -21,19 +21,22 @@ export const usersSlice = createApi({
         method: "PUT",
         body: updatedUser,
       }),
-      invalidatesTags: ['User']
+      invalidatesTags: ["User"],
     }),
     getUserDetails: builder.query({
       query: (id) => ({
         url: `/user/${id}`,
         method: "GET",
       }),
-      providesTags: ['User']
+      providesTags: ["User"],
+    }),
+    getAllUsers: builder.query({
+      query: () => ({
+        url: "/all",
+        method: "GET"
+      })
     }),
   }),
 })
 
-export const {
-  useUpdateUserMutation,
-  useGetUserDetailsQuery,
-} = usersSlice
+export const { useUpdateUserMutation, useGetUserDetailsQuery, useGetAllUsersQuery } = usersSlice

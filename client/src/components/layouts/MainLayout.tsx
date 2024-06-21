@@ -3,6 +3,7 @@ import {
   LaptopOutlined,
   ProductOutlined,
   UserOutlined,
+  UsergroupAddOutlined
 } from "@ant-design/icons"
 import { Avatar, Layout, Menu, theme } from "antd"
 import { Link, Outlet, useNavigate } from "react-router-dom"
@@ -34,6 +35,11 @@ const MainLayout: React.FC = () => {
       icon: <LaptopOutlined />,
     },
     {
+      label: "Users",
+      key: `/users`,
+      icon: <UsergroupAddOutlined />,
+    },
+    {
       label: "Profile",
       key: `/profile/${user._id}`,
       icon: <UserOutlined />,
@@ -57,8 +63,7 @@ const MainLayout: React.FC = () => {
               className="mr-2 bg-gray-500"
             />
             <h1 className="sm:text-md md:text-lg">
-              Hello, {user.username} ||{" "}
-              {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+              Hello, {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
             </h1>
           </div>
         </Menu>
