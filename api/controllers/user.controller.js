@@ -60,6 +60,15 @@ export const getUserDetails = async (req, res, next) => {
   }
 }
 
+export const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find()
+    res.status(200).json(users)
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const test = (req, res) => {
     res.json({
       message: "Api route is working!",
