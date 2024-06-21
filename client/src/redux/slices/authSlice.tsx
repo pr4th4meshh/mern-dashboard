@@ -1,6 +1,6 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { setUser } from './userSlice'; // Import actions from userSlice
-import { BASE_URL } from "../../env";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
+import { setUser } from "./userSlice" // Import actions from userSlice
+import { BASE_URL } from "../../env"
 
 export const authSlice = createApi({
   reducerPath: "authSlice",
@@ -8,11 +8,11 @@ export const authSlice = createApi({
     baseUrl: BASE_URL,
     credentials: "include",
     prepareHeaders: (headers, { getState }: any) => {
-      const token = getState().user.token;
+      const token = getState().user.token
       if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
+        headers.set("Authorization", `Bearer ${token}`)
       }
-      return headers;
+      return headers
     },
   }),
   tagTypes: ["User"],
@@ -32,8 +32,8 @@ export const authSlice = createApi({
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
-          const { data } = await queryFulfilled;
-          dispatch(setUser({ user: data.user, accessToken: data.token })); // Ensure correct field names
+          const { data } = await queryFulfilled
+          dispatch(setUser({ user: data.user, accessToken: data.token })) // Ensure correct field names
         } catch (error) {
           // Handle error
         }
@@ -46,6 +46,10 @@ export const authSlice = createApi({
       }),
     }),
   }),
-});
+})
 
-export const { useSignupMutation, useSigninMutation, useSignoutMutation } = authSlice;
+export const {
+  useSignupMutation,
+  useSigninMutation,
+  useSignoutMutation,
+} = authSlice

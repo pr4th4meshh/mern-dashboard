@@ -1,14 +1,14 @@
 import { Button, ButtonProps } from "antd"
-import { AppstoreAddOutlined } from "@ant-design/icons"
 
-const ButtonComponent = ({ name, onClick, cn }: ButtonProps) => {
+const ButtonComponent = ({ name, onClick, cn, icon, bgColor, isLoading }: ButtonProps) => {
   return (
     <Button
       type="primary"
-      className={`${cn} flex bg-secondary text-primary`}
+      className={`${cn} ${bgColor} flex text-primary`}
       size="large"
-      icon={<AppstoreAddOutlined />}
+      icon={icon}
       onClick={onClick}
+      loading={isLoading}
     >
       {name}
     </Button>

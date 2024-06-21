@@ -15,6 +15,50 @@ export const register = async (req, res) => {
   }
 };
 
+export const editUser = async (req, res) => {
+  const userId = req.params.id;
+  const { username, email, password, role } = req.body;
+
+  try {
+    // Prepare the update object
+    const updateFields = {};
+    if (username) updateFields.username = username;
+    if (email) updateFields.email = email;
+    if (role) updateFields.role = role;
+    if (password) {
+      updateFields.password = await bcrypt.hash(password, 10);
+    }
+
+    // Update the user document using $set
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updateFields },
+      { new: true }
+    ).select('-password'); // Exclude the password field
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }  
+
+    res.status(200).json({ message: 'User updated successfully', user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getUserDetails = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id)
+
+    if (!user) return next(errorHandler(404, "User not found!"))
+
+    const { password: pass, ...rest } = user._doc
+
+    res.status(200).json(rest)
+  } catch (error) {
+    next(error)
+  }
+}
 
 export const test = (req, res) => {
     res.json({

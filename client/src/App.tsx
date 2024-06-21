@@ -20,7 +20,7 @@ function App() {
      <Route element={<MainLayout />}>
         <Route path="/" element={<Products />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/:id" element={<Profile />} />
         <Route path="/product/id/:id" element={<SingleProduct />} />
       </Route>
      </Route>

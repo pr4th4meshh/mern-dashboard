@@ -2,6 +2,7 @@ import { Input } from "antd"
 import { Header } from "antd/es/layout/layout"
 import ButtonComponent from "../ButtonComponent"
 import { useSelector } from "react-redux"
+import { AppstoreAddOutlined } from "@ant-design/icons"
 
 type PageNavbarProps = {
   title: string
@@ -48,7 +49,14 @@ const PageNavbar = ({
         {user?.role === "user" ? (
           ""
         ) : (
-          <ButtonComponent cn="" onClick={onClick} name={buttonName} />
+          <ButtonComponent
+            cn=""
+            icon={<AppstoreAddOutlined />}
+            bgColor="bg-secondary"
+            onClick={onClick}
+            name={buttonName}
+            isLoading={null}
+          />
         )}
       </div>
     </Header>

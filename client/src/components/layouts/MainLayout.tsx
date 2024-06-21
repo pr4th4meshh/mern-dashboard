@@ -7,26 +7,10 @@ import {
 import { Avatar, Layout, Menu, theme } from "antd"
 import { Link, Outlet, useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
+import { Footer } from "antd/es/layout/layout"
+import { selectCurrentUser } from "../../redux/slices/userSlice"
 
 const { Header, Content, Sider } = Layout
-
-const items = [
-  {
-    label: "Products",
-    key: "/",
-    icon: <ProductOutlined />,
-  },
-  {
-    label: "Dashboard",
-    key: "/dashboard",
-    icon: <LaptopOutlined />,
-  },
-  {
-    label: "Profile",
-    key: "/profile",
-    icon: <UserOutlined />,
-  },
-]
 
 const MainLayout: React.FC = () => {
   const {
@@ -36,7 +20,25 @@ const MainLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false)
 
   const navigate = useNavigate()
-  const user = useSelector((state) => state?.user.user)
+  const user = useSelector(selectCurrentUser)
+
+  const items = [
+    {
+      label: "Products",
+      key: "/",
+      icon: <ProductOutlined />,
+    },
+    {
+      label: "Dashboard",
+      key: "/dashboard",
+      icon: <LaptopOutlined />,
+    },
+    {
+      label: "Profile",
+      key: `/profile/${user._id}`,
+      icon: <UserOutlined />,
+    },
+  ]
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -101,6 +103,17 @@ const MainLayout: React.FC = () => {
           </Content>
         </Layout>
       </Layout>
+      <Footer style={{ textAlign: "center" }}>
+        Pr4th4meshh Dashboard ©{new Date().getFullYear()} | Created by{" "}
+        <a
+          target="_blank"
+          rel="noopener"
+          className="text-red-500 underline"
+          href="https://github.com/pr4th4meshh"
+        >
+          @pr4th4meshh
+        </a>
+      </Footer>
     </Layout>
   )
 }
