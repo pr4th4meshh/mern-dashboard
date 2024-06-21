@@ -1,27 +1,42 @@
-import React from "react"
-import { Space, Table, Tag } from "antd"
-import { useGetAllUsersQuery } from "../../redux/slices/usersSlice"
-
-interface UserType {
-  key: React.Key
-  username: string
-  email: string
-  role: string[]
-}
+import { Popconfirm, Space, Table, Tag, message } from "antd"
+import {DeleteOutlined} from "@ant-design/icons"
+import {
+  useDeleteUserMutation,
+  useGetAllUsersQuery,
+} from "../../redux/slices/usersSlice"
+import Loading from "../../components/ui/Loading"
+import { useEffect } from "react"
 
 const Users = () => {
   const {
     data: getAllUsers = [],
     isLoading,
     isError,
+    refetch,
   } = useGetAllUsersQuery(undefined)
+
+  const [deleteUser] = useDeleteUserMutation()
+
+  useEffect(() => {
+    refetch()
+  }, [refetch])
+
+  const handleDeleteUser = async (userId) => {
+    try {
+      await deleteUser(userId).unwrap()
+      refetch()
+      message.success("User deleted successfully!")
+    } catch (error) {
+      message.error(error.mesage || "Error while deleting user")
+    }
+  }
 
   const columns = [
     {
       title: "Username",
       dataIndex: "username",
       key: "username",
-      render: (username) => (
+      render: (username: string) => (
         <span>{username.charAt(0).toUpperCase() + username.slice(1)}</span>
       ),
     },
@@ -34,7 +49,7 @@ const Users = () => {
       title: "Role",
       dataIndex: "role",
       key: "role",
-      render: (role) => (
+      render: (role: string) => (
         <Tag
           color={
             role === "user"
@@ -53,10 +68,20 @@ const Users = () => {
     {
       title: "Action",
       key: "action",
-      render: (_: any, record: UserType) => (
+      render: (record) => (
         <Space size="middle">
           <a className="text-blue-500">Edit</a>
-          <a className="text-red-500">Delete</a>
+          <Popconfirm
+            title="Delete user"
+            description="Are you sure to delete this user?"
+            onConfirm={() => handleDeleteUser(record._id)}
+            icon={<DeleteOutlined style={{color: "red"}} />}
+            okText="Delete"
+            okType="danger"
+            cancelText="Cancel"
+          >
+            <a className="text-red-500">Delete</a>
+          </Popconfirm>
         </Space>
       ),
     },
@@ -67,14 +92,19 @@ const Users = () => {
     total: getAllUsers.length, // Total number of items
     showTotal: (total: number, range: [number, number]) =>
       `Showing ${range[0]}-${range[1]} of ${total} items`, // Display text for total items
-  };
+  }
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return <Loading />
   if (isError) return <div>Error fetching data</div>
 
   return (
     <div className="p-6">
-      <Table pagination={pagination} dataSource={getAllUsers} columns={columns} />
+      <Table
+        loading={isLoading}
+        pagination={pagination}
+        dataSource={getAllUsers}
+        columns={columns}
+      />
     </div>
   )
 }
