@@ -6,7 +6,7 @@ import MainLayout from "./components/layouts/MainLayout"
 import Profile from "./pages/profile"
 import PrivateRoute from "./utils/PrivateRoute"
 import Products from "./pages/products"
-import Dashboard from "./pages/dashboard"
+import Dashboard, { DashboardPage } from "./pages/dashboard"
 import NotFoundComponent from "./components/ui/NotFound"
 import SingleProduct from "./pages/single-product/SingleProduct"
 import Users from "./pages/users"
@@ -20,7 +20,7 @@ function App() {
      <Route element={<PrivateRoute />} >
      <Route element={<MainLayout />}>
         <Route path="/" element={<Products />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/users" element={<Users />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/product/id/:id" element={<SingleProduct />} />
