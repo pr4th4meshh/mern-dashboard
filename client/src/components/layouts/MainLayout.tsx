@@ -51,7 +51,7 @@ const MainLayout: React.FC = () => {
           width={200}
           style={{ background: colorBgContainer }}
           breakpoint="md"
-          collapsedWidth="70"
+          collapsedWidth="0"
         >
           <Link to="/">
             {collapsed ? (

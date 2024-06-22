@@ -50,7 +50,7 @@ const PageNavbar = ({
           ""
         ) : (
           <ButtonComponent
-            cn=""
+            cn="flex hidden md:block"
             icon={<AppstoreAddOutlined />}
             bgColor="bg-secondary"
             onClick={onClick}

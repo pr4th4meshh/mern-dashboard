@@ -5,10 +5,10 @@ import {
   RobotOutlined,
   LogoutOutlined,
 } from "@ant-design/icons"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import { useSignoutMutation } from "../../redux/slices/authSlice"
-import { clearUser, setUser } from "../../redux/slices/userSlice"
+import { clearUser, selectCurrentUser, setUser } from "../../redux/slices/userSlice"
 import ButtonComponent from "../../components/ui/ButtonComponent"
 import {
   useGetUserDetailsQuery,
@@ -25,6 +25,7 @@ const Profile = () => {
 
   const { id } = useParams()
   const { data: userData, refetch } = useGetUserDetailsQuery(id)
+  const user = useSelector(selectCurrentUser)
 
   useEffect(() => {
     refetch()
@@ -82,8 +83,8 @@ const Profile = () => {
           layout="vertical"
           className="mt-8"
           initialValues={{
-            username: userData?.username,
-            email: userData?.email,
+            username: user?.username,
+            email: user?.email,
           }}
           onFinish={handleUpdateUser}
           form={form}

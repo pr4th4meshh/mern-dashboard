@@ -129,6 +129,7 @@ const Users = () => {
       title: "Email",
       dataIndex: "email",
       key: "email",
+      responsive: ['md'],
     },
     {
       title: "Role",
@@ -153,6 +154,7 @@ const Users = () => {
     {
       title: "Action",
       key: "action",
+      responsive: ['lg'],
       render: (record: UserProps) => (
         <Space size="middle">
           <a className="text-blue-500" onClick={() => handleEdit(record)}>
@@ -191,7 +193,7 @@ const Users = () => {
   if (isError) return <div>Error fetching data</div>
 
   return (
-    <div className="p-6">
+    <div className="sm:p-2 md:p-6">
       <Table
         loading={isLoading}
         pagination={pagination}

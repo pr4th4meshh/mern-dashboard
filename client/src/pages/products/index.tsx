@@ -69,7 +69,7 @@ const Products = () => {
           All Products ({displayedProducts.length})
         </h1>
       )}
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-2">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 sm:gap-4 px-2">
         {displayedProducts.length > 0 ? (
           displayedProducts.map((product: ProductProps) => (
             <div className="m-3" key={product._id}>
