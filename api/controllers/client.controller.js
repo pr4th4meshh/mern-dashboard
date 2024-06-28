@@ -32,3 +32,56 @@ export const signinClient = async (req, res, next) => {
       next(error);
     }
   };
+
+  export const signoutClient = async (req, res, next) => {
+    try {
+      res.clearCookie("access_token")
+      res.status(200).json({ message: "User has been signed out..." })
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  export const getClientDetails = async (req, res, next) => {
+    try {
+      const user = await Client.findById(req.params.id)
+  
+      if (!user) return next(errorHandler(404, "User not found!"))
+  
+      const { password: pass, ...rest } = user._doc
+  
+      res.status(200).json(rest)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  export const editClient = async (req, res) => {
+    const userId = req.params.id;
+    const { username, email, password } = req.body;
+  
+    try {
+      // Prepare the update object
+      const updateFields = {};
+      if (username) updateFields.username = username;
+      if (email) updateFields.email = email;
+      if (password) {
+        updateFields.password = await bcrypt.hash(password, 10);
+      }
+  
+      // Update the client document using $set
+      const updatedClient = await Client.findByIdAndUpdate(
+        userId,
+        { $set: updateFields },
+        { new: true }
+      ).select('-password'); // Exclude the password field
+  
+      if (!updatedClient) {
+        return res.status(404).json({ message: 'User not found' });
+      }  
+  
+      res.status(200).json({ message: 'User updated successfully', user: updatedClient });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
