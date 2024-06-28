@@ -6,7 +6,7 @@ import {
   updateProduct,
   getProductByName,
   getProductById,
-} from "../../controllers/product.controller.js"
+} from "../controllers/product.controller.js"
 import { verifyToken } from "../../middlewares/authMiddleware.js"
 
 const router = express.Router()
