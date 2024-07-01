@@ -57,7 +57,7 @@ export const getProductsByCategory = async (req, res, next) => {
 }
 
 export const createProduct = async (req, res, next) => {
-  const { name, description, price } = req.body
+  const { name, description, price, category } = req.body
   const createdBy = req.user._id
   try {
     const newProduct = new Product({
@@ -88,6 +88,7 @@ export const updateProduct = async (req, res, next) => {
         price,
         category,
         updatedBy,
+        updatedAt: Date.now()
       },
       { new: true }
     )
