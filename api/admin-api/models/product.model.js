@@ -14,6 +14,10 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    category: {
+      type: String,
+      required: true
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

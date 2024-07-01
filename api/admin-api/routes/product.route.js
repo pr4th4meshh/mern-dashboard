@@ -6,6 +6,7 @@ import {
   updateProduct,
   getProductByName,
   getProductById,
+  getProductsByCategory,
 } from "../controllers/product.controller.js"
 import { verifyToken } from "../../middlewares/authMiddleware.js"
 
@@ -16,6 +17,7 @@ router.get("/all", getAllProducts)
 router.put("/update/:id", verifyToken(["admin", "superadmin", "developer"]), updateProduct)
 router.get("/product/:name", getProductByName)
 router.get("/product/id/:id", getProductById)
+router.get("/category/:category", getProductsByCategory)
 router.delete(
   "/delete/:id",
   verifyToken(["admin", "superadmin", "developer"]),

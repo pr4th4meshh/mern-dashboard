@@ -40,6 +40,22 @@ export const getProductById = async (req, res, next) => {
   }
 }
 
+export const getProductsByCategory = async (req, res, next) => {
+  const { category } = req.params
+
+  try {
+    const products = await Product.find({ category })
+    if (products.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No products found in this category" })
+    }
+    res.status(200).json(products)
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const createProduct = async (req, res, next) => {
   const { name, description, price } = req.body
   const createdBy = req.user._id
@@ -48,6 +64,7 @@ export const createProduct = async (req, res, next) => {
       name,
       description,
       price,
+      category,
       createdBy,
     })
     await newProduct.save()
@@ -59,7 +76,7 @@ export const createProduct = async (req, res, next) => {
 
 export const updateProduct = async (req, res, next) => {
   const productId = req.params.id
-  const { name, description, price } = req.body
+  const { name, description, price, category } = req.body
   const updatedBy = req.user._id
 
   try {
@@ -69,6 +86,7 @@ export const updateProduct = async (req, res, next) => {
         name,
         description,
         price,
+        category,
         updatedBy,
       },
       { new: true }
