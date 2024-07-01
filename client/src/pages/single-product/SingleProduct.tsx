@@ -39,7 +39,7 @@ const SingleProduct = () => {
 
   const handleUpdate = async (values) => {
     try {
-      await updateProduct({ id, ...values }).unwrap()
+      await updateProduct({ id, ...values, category: values.category.join(", ") }).unwrap()
       message.success("Product updated successfully!")
       refetch()
       categoriesRefetch()
@@ -115,6 +115,7 @@ const SingleProduct = () => {
 
           <Form.Item label="Category" name="category" required>
             <Select
+              mode="tags"
               allowClear
               style={{ width: "100%" }}
               placeholder="Select or enter Category Type"
