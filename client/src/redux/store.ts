@@ -8,14 +8,16 @@ import storage from "redux-persist/lib/storage"
 import { persistReducer, persistStore } from "redux-persist"
 import { productsSlice } from "./slices/productsSlice"
 import { usersSlice } from "./slices/usersSlice"
+import { categorySlice } from "./slices/categorySlice"
 
 const rootReducer = combineReducers({
   [authSlice.reducerPath]: authSlice.reducer,
   [productsSlice.reducerPath]: productsSlice.reducer,
   [usersSlice.reducerPath]: usersSlice.reducer,
+  [categorySlice.reducerPath]: categorySlice.reducer,
   user: userReducer,
   product: productReducer,
-  configuration: configurationReducer
+  configuration: configurationReducer,
 })
 
 const persistConfig = {
@@ -31,7 +33,9 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false })
       .concat(authSlice.middleware)
-      .concat(productsSlice.middleware).concat(usersSlice.middleware),
+      .concat(productsSlice.middleware)
+      .concat(usersSlice.middleware)
+      .concat(categorySlice.middleware),
 })
 
 export const persistor = persistStore(store)
