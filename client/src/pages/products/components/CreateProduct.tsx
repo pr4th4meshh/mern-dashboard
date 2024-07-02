@@ -4,27 +4,21 @@ import {
   useCreateProductMutation,
   useGetAllProductsQuery,
 } from "../../../redux/slices/productsSlice"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {
   selectConfiguration,
   toggleModal,
 } from "../../../redux/slices/configurationSlice"
 import { MODAL_STATE } from "../../../common/states"
-import { useGetAllCategoriesQuery } from "../../../redux/slices/categorySlice"
+import { CATEGORY_TYPES } from "../../../common/constants"
 
 const CreateProduct = () => {
-  const [selectedCategories, setSelectedCategories] = useState([])
   const [form] = Form.useForm()
   const { refetch } = useGetAllProductsQuery(undefined)
   const [createProduct, { isLoading }] = useCreateProductMutation()
-  const { data: categoriesData, refetch: categoriesRefetch } = useGetAllCategoriesQuery(undefined)
   const dispatch = useDispatch()
   const Configuration = useSelector(selectConfiguration)
-
-  const handleCategoryChange = (value) => {
-    setSelectedCategories(value);
-  };
 
   const toggle = () => {
     form.resetFields()
@@ -33,11 +27,13 @@ const CreateProduct = () => {
 
   const onFinish = async (values) => {
     try {
-      await createProduct({...values, category: values.category.join(", ")}).unwrap()
+      await createProduct({
+        ...values,
+        category: values.category.join(", "),
+      }).unwrap()
       message.success("Product created successfully!")
       form.resetFields()
       refetch()
-      categoriesRefetch()
       toggle()
     } catch (error) {
       message.error(
@@ -48,8 +44,7 @@ const CreateProduct = () => {
 
   useEffect(() => {
     refetch()
-    categoriesRefetch()
-  }, [refetch, categoriesRefetch])
+  }, [refetch])
 
   return (
     <div>
@@ -91,16 +86,13 @@ const CreateProduct = () => {
 
           <Form.Item label="Category" name="category" required>
             <Select
-              mode="tags"
               allowClear
               style={{ width: "100%" }}
               placeholder="Select or enter Category Type"
-              value={selectedCategories}
-              onChange={handleCategoryChange}
             >
-              {categoriesData?.map((category) => (
-                <Select.Option key={category} value={category}>
-                  {category}
+              {CATEGORY_TYPES.map((category) => (
+                <Select.Option key={category.id} value={category.value}>
+                  {category.categoryName}
                 </Select.Option>
               ))}
             </Select>
