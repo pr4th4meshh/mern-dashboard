@@ -10,7 +10,7 @@ import NestedLayout from "../../components/layouts/NestedLayout"
 import moment from "moment"
 import { useSelector } from "react-redux"
 import Loading from "../../components/ui/Loading"
-import { CATEGORY_TYPES } from "../../common/constants"
+import { CATEGORY_TYPES, SIZES } from "../../common/constants"
 
 const SingleProduct = () => {
   const { id } = useParams()
@@ -57,12 +57,14 @@ const SingleProduct = () => {
         { name: ["description"], value: `Loading..` },
         { name: ["price"], value: `Loading..` },
         { name: ["category"], value: `Loading...` },
+        { name: ["sizes"], value: `Loading...` },
       ]
     return [
       { name: ["name"], value: `${singleProductData?.name}` },
       { name: ["description"], value: `${singleProductData?.description}` },
       { name: ["price"], value: singleProductData?.price },
       { name: ["category"], value: singleProductData?.category },
+      { name: ["sizes"], value: singleProductData?.sizes },
     ]
   }, [singleProductData])
 
@@ -119,6 +121,21 @@ const SingleProduct = () => {
               {CATEGORY_TYPES.map((category) => (
                 <Select.Option key={category.id} value={category.value}>
                   {category.categoryName}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item label="Sizes" name="sizes" required>
+            <Select
+              mode="multiple"
+              allowClear
+              style={{ width: "100%" }}
+              placeholder="Select sizes"
+            >
+              {SIZES.map((size) => (
+                <Select.Option key={size.id} value={size.value}>
+                  {size.size.toUpperCase()}
                 </Select.Option>
               ))}
             </Select>

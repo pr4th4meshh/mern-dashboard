@@ -57,7 +57,7 @@ export const getProductsByCategory = async (req, res, next) => {
 }
 
 export const createProduct = async (req, res, next) => {
-  const { name, description, price, category } = req.body
+  const { name, description, price, category, sizes } = req.body
   const createdBy = req.user._id
   try {
     const newProduct = new Product({
@@ -65,6 +65,7 @@ export const createProduct = async (req, res, next) => {
       description,
       price,
       category,
+      sizes,
       createdBy,
     })
     await newProduct.save()
@@ -76,7 +77,7 @@ export const createProduct = async (req, res, next) => {
 
 export const updateProduct = async (req, res, next) => {
   const productId = req.params.id
-  const { name, description, price, category } = req.body
+  const { name, description, price, category, sizes } = req.body
   const updatedBy = req.user._id
 
   try {
@@ -87,8 +88,9 @@ export const updateProduct = async (req, res, next) => {
         description,
         price,
         category,
+        sizes,
         updatedBy,
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
       },
       { new: true }
     )
