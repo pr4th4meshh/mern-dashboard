@@ -23,16 +23,20 @@ mongoose
     console.log(err)
   })
 
-  const corsOptions = {
-    origin: 'http://localhost:5173',
-    credentials: true,
-  };
+const corsOptions = {
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:3000",
+  ],
+  credentials: true,
+}
 
 const PORT = process.env.PORT || 5000
 
 app.use(cors(corsOptions))
 app.use(express.json())
-app.use(cookieParser());
+app.use(cookieParser())
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500
@@ -51,5 +55,5 @@ app.listen(5000, () => {
 app.use("/api/user", userRouter)
 app.use("/api/auth", authRouter)
 app.use("/api/auth/client", clientRouter)
-app.use('/api/test', testRouter);
-app.use('/api/products', productsRouter)
+app.use("/api/test", testRouter)
+app.use("/api/products", productsRouter)
