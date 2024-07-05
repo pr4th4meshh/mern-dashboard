@@ -1,55 +1,49 @@
-import { ReactNode, useEffect, useState } from "react";
-import {
-  useGetAllProductsQuery,
-} from "../../redux/slices/productsSlice";
-import ProductCard from "./components/ProductCard";
-import moment from "moment";
-import PageNavbar from "../../components/ui/PageNavbar";
-import useDebounce from "../../hooks/useDebounceHook";
-import NotFoundComponent from "../../components/ui/NotFound";
-import CreateProduct from "./components/CreateProduct";
-import { useDispatch } from "react-redux";
-import { toggleModal } from "../../redux/slices/configurationSlice";
-import { MODAL_STATE } from "../../common/states";
-import Loading from "../../components/ui/Loading";
-
-type ProductProps = {
-  _id: string;
-  name: string;
-  createdBy?: string;
-  createdAt?: string;
-};
+import { useEffect, useState } from "react"
+import { useGetAllProductsQuery } from "../../redux/slices/productsSlice"
+import PageNavbar from "../../components/ui/PageNavbar"
+import useDebounce from "../../hooks/useDebounceHook"
+import NotFoundComponent from "../../components/ui/NotFound"
+import CreateProduct from "./components/CreateProduct"
+import { useDispatch } from "react-redux"
+import { toggleModal } from "../../redux/slices/configurationSlice"
+import { MODAL_STATE } from "../../common/states"
+import Loading from "../../components/ui/Loading"
+import { List } from "antd"
+import ListItemComponent from "./components/ListItemCompo"
 
 const Products = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const [searchTerm, setSearchTerm] = useState("")
+  const debouncedSearchTerm = useDebounce(searchTerm, 500)
 
   const {
     data: products,
     error: productsError,
     isLoading: productsLoading,
     refetch: refetchProducts,
-  } = useGetAllProductsQuery(debouncedSearchTerm || undefined);
+  } = useGetAllProductsQuery(debouncedSearchTerm || undefined)
 
   const dispatch = useDispatch()
 
   const handleInputChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
+    setSearchTerm(e.target.value)
+  }
 
   useEffect(() => {
     if (!debouncedSearchTerm) {
-      refetchProducts();
+      refetchProducts()
     }
-  }, [debouncedSearchTerm, refetchProducts]);
+  }, [debouncedSearchTerm, refetchProducts])
 
-  if (productsLoading) return <Loading />;
+  if (productsLoading) return <Loading />
   if (productsError) {
-    const errorMessage = productsError?.message;
-    return <p>Error fetching products: {errorMessage}</p>;
+    const errorMessage = productsError?.message
+    return <p>Error fetching products: {errorMessage}</p>
   }
 
-  const displayedProducts = products || [];
+  const displayedProducts = products || []
+  if (!displayedProducts) {
+    ;<NotFoundComponent pageTitle="Products" />
+  }
 
   return (
     <div>
@@ -69,28 +63,26 @@ const Products = () => {
           All Products ({displayedProducts.length})
         </h1>
       )}
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 sm:gap-4 px-2">
-        {displayedProducts.length > 0 ? (
-          displayedProducts.map((product: ProductProps) => (
-            <div className="m-3" key={product._id}>
-              <ProductCard
-              productId={product._id}
-                productName={product.name}
-                icon={undefined}
-                loading={productsLoading}
-                createdBy={product.createdBy?.username}
-                createdAt={moment(product.createdAt).format("D MMM YYYY LT")}
-              />
-            </div>
-          ))
-        ) : (
-          <div>
-            <NotFoundComponent pageTitle={"Products"} />
-          </div>
-        )}
-      </div>
+      <List
+        grid={{
+          gutter: 16,
+          column: 2,
+          sm: 1,
+          xs: 1,
+        }}
+        loadMore={productsLoading}
+        itemLayout="vertical"
+        size="large"
+        pagination={{
+          pageSize: 8,
+          hideOnSinglePage: true,
+        }}
+        locale={{ emptyText: "No products to display!" }}
+        dataSource={displayedProducts}
+        renderItem={(item: any) => <ListItemComponent item={item} />}
+      />
     </div>
-  );
-};
+  )
+}
 
-export default Products;
+export default Products
