@@ -58,13 +58,14 @@ export const signinClient = async (req, res, next) => {
 
   export const editClient = async (req, res) => {
     const userId = req.params.id;
-    const { username, email, password } = req.body;
+    const { username, email, password, avatar } = req.body;
   
     try {
       // Prepare the update object
       const updateFields = {};
       if (username) updateFields.username = username;
       if (email) updateFields.email = email;
+      if (avatar) updateFields.avatar = avatar
       if (password) {
         updateFields.password = await bcrypt.hash(password, 10);
       }
@@ -85,3 +86,30 @@ export const signinClient = async (req, res, next) => {
       res.status(500).json({ message: error.message });
     }
   };
+
+  export const google = async (req, res, next) => {
+    try {
+      const user = await Client.findOne({ email: req.body.email });
+      if (user) {
+        const token = jwt.sign({ id: user._id }, 'thisismyjwtsecretkeyforthisapp');
+        const { password, ...rest } = user._doc;
+        res.cookie('access_token', token, { httpOnly: true }).status(200).json({ ...rest, token });
+      } else {
+        const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+        const hashedPassword = bcrypt.hashSync(generatedPassword, 10);
+        const newUser = new Client({
+          username: req.body.name.split(' ').join('').toLowerCase() + Math.random().toString(36).slice(-4),
+          email: req.body.email,
+          password: hashedPassword,
+          avatar: req.body.photo
+        });
+        await newUser.save();
+        const token = jwt.sign({ id: newUser._id }, 'thisismyjwtsecretkeyforthisapp');
+        const { password, ...rest } = newUser._doc;
+        res.cookie('access_token', token, { httpOnly: true }).status(200).json({ ...rest, token });
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
+  
