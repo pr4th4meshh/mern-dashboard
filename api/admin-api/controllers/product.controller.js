@@ -77,7 +77,7 @@ export const createProduct = async (req, res, next) => {
 
 export const updateProduct = async (req, res, next) => {
   const productId = req.params.id
-  const { name, description, price, category, sizes } = req.body
+  const { name, description, price, category, sizes, productImages } = req.body
   const updatedBy = req.user._id
 
   try {
@@ -89,6 +89,7 @@ export const updateProduct = async (req, res, next) => {
         price,
         category,
         sizes,
+        productImages,
         updatedBy,
         updatedAt: Date.now(),
       },
