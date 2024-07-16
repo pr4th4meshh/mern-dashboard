@@ -7,6 +7,8 @@ import {
   getProductByName,
   getProductById,
   getProductsByCategory,
+  addRating,
+  getRatings,
 } from "../controllers/product.controller.js"
 import { verifyToken } from "../../middlewares/authMiddleware.js"
 import { getAllCategories } from "../controllers/category.controller.js"
@@ -25,5 +27,7 @@ router.delete(
   verifyToken(["admin", "superadmin", "developer"]),
   deleteProduct
 )
+router.post("/:id/addRatings", addRating)
+router.get("/:id/ratings", getRatings)
 
 export default router

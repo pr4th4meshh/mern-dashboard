@@ -6,6 +6,7 @@ interface ItemProps {
   _id: string
   name: string
   description: string
+  productImages: string[]
   createdBy?: {
     username: string
   }
@@ -30,7 +31,7 @@ const ListItemComponent = ({ item }: ListItemComponentProps) => {
           <img
             className="object-cover rounded-xl w-[100px] h-[100px]"
             alt={item.name}
-            src="https://via.placeholder.com/300x300/ff0000"
+            src={item.productImages[0] || "https://via.placeholder.com/300x300/ff0000"}
           />
         }
       >

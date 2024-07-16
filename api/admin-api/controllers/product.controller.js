@@ -120,3 +120,45 @@ export const deleteProduct = async (req, res, next) => {
     next(error)
   }
 }
+
+export const addRating = async (req, res) => {
+  const productId = req.params.id
+  const { rating, user } = req.body
+
+  try {
+    const product = await Product.findById(productId)
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" })
+    }
+
+    const existingRating = product.ratings.find(
+      (r) => r.user.toString() === user
+    )
+
+    if (existingRating) {
+      existingRating.rating = rating
+    } else {
+      product.ratings.push({ user, rating })
+    }
+
+    await product.save()
+    res.status(201).json(product)
+  } catch (error) {
+    res.status(500).json({ message: "Server error" })
+  }
+}
+
+export const getRatings = async (req, res) => {
+  const productId = req.params.id
+
+  try {
+    const product = await Product.findById(productId)
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" })
+    }
+
+    res.json(product.ratings)
+  } catch (error) {
+    res.status(500).json({ message: "Server error" })
+  }
+}
