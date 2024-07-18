@@ -6,6 +6,7 @@ import userRouter from "./admin-api/routes/user.route.js"
 import authRouter from "./admin-api/routes/auth.route.js"
 import testRouter from "./admin-api/routes/test.route.js"
 import clientRouter from "./client-api/routes/client.route.js"
+import orderRouter from "./client-api/routes/order.route.js" 
 import productsRouter from "./admin-api/routes/product.route.js"
 import cookieParser from "cookie-parser"
 
@@ -57,3 +58,4 @@ app.use("/api/auth", authRouter)
 app.use("/api/auth/client", clientRouter)
 app.use("/api/test", testRouter)
 app.use("/api/products", productsRouter)
+app.use("/api/orders", orderRouter)

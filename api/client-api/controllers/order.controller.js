@@ -1,0 +1,62 @@
+import Order from "../models/order.model.js"
+import Client from "../models/client.model.js"
+
+// Create a new order
+export const createOrder = async (req, res) => {
+  try {
+    const { user, phoneNumber, deliveryAddress, products } = req.body
+    const newOrder = new Order({ user, phoneNumber, deliveryAddress, products })
+    await newOrder.save()
+
+    // Optionally, update user details
+    await Client.findByIdAndUpdate(user, { phoneNumber, deliveryAddress })
+
+    res.status(201).json(newOrder)
+  } catch (error) {
+    res.status(500).json({ message: "Error creating order", error })
+  }
+}
+
+// Get order status
+export const getOrderStatus = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.orderId)
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" })
+    }
+    res.json({ status: order.status })
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching order status", error })
+  }
+}
+
+// Update order status
+export const updateOrderStatus = async (req, res) => {
+  try {
+    const { status } = req.body
+    const order = await Order.findByIdAndUpdate(
+      req.params.orderId,
+      { status },
+      { new: true }
+    )
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" })
+    }
+    res.json(order)
+  } catch (error) {
+    res.status(500).json({ message: "Error updating order status", error })
+  }
+}
+
+// Get all orders for admin
+export const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate("user", "username")
+      .populate("products.product")
+      .exec()
+    res.status(200).json(orders)
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch orders", error })
+  }
+}
