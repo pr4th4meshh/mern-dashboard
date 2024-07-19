@@ -6,9 +6,10 @@ type ModalProps = {
     modalTitle:string
     open: () => void
     onCancel:() => void
+    footer?: string[]
 }
 
-const ModalComponent = ({ children, modalTitle, open, onCancel }: ModalProps) => {
+const ModalComponent = ({ children, modalTitle, open, onCancel, footer }: ModalProps) => {
   const handleCancel = () => {
     onCancel()
   }
@@ -20,6 +21,7 @@ const ModalComponent = ({ children, modalTitle, open, onCancel }: ModalProps) =>
         title={`Create ${modalTitle}`}
         okButtonProps={{ hidden: true }}
         cancelButtonProps={{ hidden: true }}
+        footer={footer}
       >
         {children}
       </Modal>

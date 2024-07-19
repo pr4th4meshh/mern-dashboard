@@ -5,6 +5,7 @@ const initialState = {
   [MODAL_STATE.CREATE_PRODUCT_MODAL]: false,
   [MODAL_STATE.UPDATE_PRODUCT_MODAL]: false,
   [MODAL_STATE.UPDATE_USER_MODAL]: false,
+  [MODAL_STATE.CHANGE_ORDER_STATUS]: false,
   product: null,
 };
 
@@ -23,6 +24,9 @@ const slice = createSlice({
         case MODAL_STATE.UPDATE_PRODUCT_MODAL:
           state[MODAL_STATE.UPDATE_PRODUCT_MODAL] = !state[MODAL_STATE.UPDATE_PRODUCT_MODAL];
           break;
+          case MODAL_STATE.CHANGE_ORDER_STATUS:
+            state[MODAL_STATE.CHANGE_ORDER_STATUS] = !state[MODAL_STATE.CHANGE_ORDER_STATUS];
+            break;
         default:
           break;
       }

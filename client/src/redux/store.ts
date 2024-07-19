@@ -9,12 +9,14 @@ import { persistReducer, persistStore } from "redux-persist"
 import { productsSlice } from "./slices/productsSlice"
 import { usersSlice } from "./slices/usersSlice"
 import { categorySlice } from "./slices/categorySlice"
+import { adminOrdersSlice } from "./slices/ordersApiSlice"
 
 const rootReducer = combineReducers({
   [authSlice.reducerPath]: authSlice.reducer,
   [productsSlice.reducerPath]: productsSlice.reducer,
   [usersSlice.reducerPath]: usersSlice.reducer,
   [categorySlice.reducerPath]: categorySlice.reducer,
+  [adminOrdersSlice.reducerPath]: adminOrdersSlice.reducer,
   user: userReducer,
   product: productReducer,
   configuration: configurationReducer,
@@ -35,7 +37,8 @@ export const store = configureStore({
       .concat(authSlice.middleware)
       .concat(productsSlice.middleware)
       .concat(usersSlice.middleware)
-      .concat(categorySlice.middleware),
+      .concat(categorySlice.middleware)
+      .concat(adminOrdersSlice.middleware),
 })
 
 export const persistor = persistStore(store)

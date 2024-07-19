@@ -10,6 +10,7 @@ import Dashboard, { DashboardPage } from "./pages/dashboard"
 import NotFoundComponent from "./components/ui/NotFound"
 import SingleProduct from "./pages/single-product/SingleProduct"
 import Users from "./pages/users"
+import Orders from "./pages/orders"
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
      <Route element={<MainLayout />}>
         <Route path="/" element={<Products />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/orders" element={<Orders />} />
         <Route path="/users" element={<Users />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/product/id/:id" element={<SingleProduct />} />
