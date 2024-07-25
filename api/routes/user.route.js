@@ -1,5 +1,6 @@
 import express from "express"
 import { deleteUser, editUser, getAllUsers, getUserDetails, test } from "../../controllers/user.controller.js"
+import { addItemInUsersCart } from "../admin-api/controllers/user.controller.js";
 
 const router = express.Router()
 

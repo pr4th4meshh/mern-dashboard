@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
 const clientSchema = mongoose.Schema(
   {
@@ -28,9 +28,20 @@ const clientSchema = mongoose.Schema(
       default:
         "https://upload.wikimedia.org/wikipedia/commons/a/af/Default_avatar_profile.jpg",
     },
+    cart: [
+      {
+        productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+        selectedSize: { type: String, required: true },
+        quantity: { type: Number, required: true },
+      }
+    ],
+    wishlist: {
+      type: [String],
+      default: []
+    },
   },
-  { timestamp: true }
-)
+  { timestamps: true }
+);
 
-const Client = mongoose.model("Client", clientSchema)
-export default Client
+const Client = mongoose.model("Client", clientSchema);
+export default Client;
