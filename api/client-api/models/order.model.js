@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
 const orderSchema = mongoose.Schema({
   user: {
@@ -17,6 +17,10 @@ const orderSchema = mongoose.Schema({
         type: Number,
         required: true,
       },
+      selectedSize: {
+        type: String,
+        required: true,
+      }
     },
   ],
   phoneNumber: {
@@ -37,7 +41,7 @@ const orderSchema = mongoose.Schema({
     ],
     default: "order confirmed",
   },
-}, { timestamps: true})
+}, { timestamps: true });
 
 const Order = mongoose.model('Order', orderSchema);
 export default Order;

@@ -5,6 +5,13 @@ import Client from "../models/client.model.js"
 export const createOrder = async (req, res) => {
   try {
     const { user, phoneNumber, deliveryAddress, products } = req.body
+    
+    if (!user || !phoneNumber || !deliveryAddress || !products || !products.length) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    console.log('Received products:', products);
+
     const newOrder = new Order({ user, phoneNumber, deliveryAddress, products })
     await newOrder.save()
 
@@ -16,6 +23,7 @@ export const createOrder = async (req, res) => {
     res.status(500).json({ message: "Error creating order", error })
   }
 }
+
 
 // Get order status
 export const getOrderStatus = async (req, res) => {
@@ -58,5 +66,24 @@ export const getAllOrders = async (req, res) => {
     res.status(200).json(orders)
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch orders", error })
+  }
+}
+
+export const getAllUserOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({ user: req.params.id })
+      .populate({
+        path: "products.product",
+        select: "name description price category productImages"
+      })
+      .exec()
+
+    if (!orders.length) {
+      return res.status(404).json({ message: "No orders found" })
+    }
+
+    res.status(200).json(orders)
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching orders", error })
   }
 }
