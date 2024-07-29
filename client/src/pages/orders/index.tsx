@@ -1,96 +1,96 @@
-import { Table, message, Space, Tag, Steps, Button } from "antd"
+import { Table, message, Space, Tag, Steps, Button } from "antd";
 import {
   useGetAdminOrdersQuery,
   useUpdateOrderStatusMutation,
-} from "../../redux/slices/ordersApiSlice"
-import { useEffect, useState } from "react"
-import ModalComponent from "../../components/ui/Modal"
-import { useDispatch, useSelector } from "react-redux"
+} from "../../redux/slices/ordersApiSlice";
+import { useEffect, useState } from "react";
+import ModalComponent from "../../components/ui/Modal";
+import { useDispatch, useSelector } from "react-redux";
 import {
   selectConfiguration,
   toggleModal,
-} from "../../redux/slices/configurationSlice"
-import { MODAL_STATE } from "../../common/states"
+} from "../../redux/slices/configurationSlice";
+import { MODAL_STATE } from "../../common/states";
 
 type User = {
-  _id: string
-  username: string
-}
+  _id: string;
+  username: string;
+};
 
 type Product = {
   product: {
-    _id: string
-    name: string
-  }
-  quantity: number
-}
+    _id: string;
+    name: string;
+  };
+  quantity: number;
+};
+
+type OrderStatus =
+  | "order confirmed"
+  | "processing order"
+  | "order out for delivery"
+  | "order delivered";
 
 type Order = {
-  _id: string
-  phoneNumber: string
-  user: User
-  deliveryAddress: string
-  status:
-    | "order confirmed"
-    | "processing order"
-    | "order out for delivery"
-    | "order delivered"
-  products: Product[]
-}
+  _id: string;
+  phoneNumber: string;
+  user: User;
+  deliveryAddress: string;
+  status: OrderStatus;
+  products: Product[];
+};
 
-const { Step } = Steps
+const { Step } = Steps;
 
 const AdminOrders = () => {
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const {
     data: orders,
     isLoading: ordersLoading,
     refetch,
-  } = useGetAdminOrdersQuery(undefined)
-  const [updateOrderStatus] = useUpdateOrderStatusMutation()
+  } = useGetAdminOrdersQuery(undefined);
+  const [updateOrderStatus] = useUpdateOrderStatusMutation();
 
-  console.log(orders)
-
-  const configuration = useSelector((state) => selectConfiguration(state))
-  const dispatch = useDispatch()
+  const configuration = useSelector(selectConfiguration);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    refetch()
-  }, [refetch])
+    refetch();
+  }, [refetch]);
 
-  const handleStatusChange = async (orderId: string, status: string) => {
+  const handleStatusChange = async (orderId: string, status: OrderStatus) => {
     try {
-      await updateOrderStatus({ orderId, status }).unwrap()
-      await refetch()
-      message.success("Order status updated successfully")
-      dispatch(toggleModal(MODAL_STATE.CHANGE_ORDER_STATUS))
+      await updateOrderStatus({ orderId, status }).unwrap();
+      await refetch();
+      message.success("Order status updated successfully");
+      dispatch(toggleModal(MODAL_STATE.CHANGE_ORDER_STATUS));
     } catch (error) {
-      console.error("Failed to update order status:", error)
-      message.error("Failed to update order status")
+      console.error("Failed to update order status:", error);
+      message.error("Failed to update order status");
     }
-  }
+  };
 
   const openModal = (order: Order) => {
-    setSelectedOrder(order)
-    dispatch(toggleModal(MODAL_STATE.CHANGE_ORDER_STATUS))
-  }
+    setSelectedOrder(order);
+    dispatch(toggleModal(MODAL_STATE.CHANGE_ORDER_STATUS));
+  };
 
-  const getStatusIndex = (status: string) => {
-    const statuses = [
+  const getStatusIndex = (status: OrderStatus) => {
+    const statuses: OrderStatus[] = [
       "order confirmed",
       "processing order",
       "order out for delivery",
       "order delivered",
-    ]
-    return statuses.indexOf(status)
-  }
+    ];
+    return statuses.indexOf(status);
+  };
 
   const pagination = {
     pageSize: 10,
     total: orders?.length,
     showTotal: (total: number, range: [number, number]) =>
       `Showing ${range[0]}-${range[1]} of ${total} items`,
-  }
+  };
 
   const columns = [
     { title: "Order ID", dataIndex: "_id", key: "_id" },
@@ -98,14 +98,14 @@ const AdminOrders = () => {
     {
       title: "Username",
       key: "username",
-      render: (text: string, record: Order) => record.user.username,
+      render: (_text: string, record: Order) => record.user.username,
     },
     { title: "Address", dataIndex: "deliveryAddress", key: "deliveryAddress" },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (text: string, record: Order) => (
+      render: (_text: string, record: Order) => (
         <Tag
           color={
             record.status === "order confirmed"
@@ -121,6 +121,7 @@ const AdminOrders = () => {
         </Tag>
       ),
     },
+    // Uncomment if you need to display products
     // {
     //   title: "Products",
     //   key: "products",
@@ -137,8 +138,8 @@ const AdminOrders = () => {
     // },
     {
       title: "Change Status",
-      key: "Change Status",
-      render: (text: string, record: Order) => (
+      key: "changeStatus",
+      render: (_text: string, record: Order) => (
         <Space
           onClick={() => openModal(record)}
           className="text-orange-500"
@@ -148,7 +149,7 @@ const AdminOrders = () => {
         </Space>
       ),
     },
-  ]
+  ];
 
   return (
     <>
@@ -181,7 +182,7 @@ const AdminOrders = () => {
                   "processing order",
                   "order out for delivery",
                   "order delivered",
-                ][current],
+                ][current] as OrderStatus,
               })
             }
           >
@@ -212,7 +213,7 @@ const AdminOrders = () => {
         loading={ordersLoading}
       />
     </>
-  )
-}
+  );
+};
 
-export default AdminOrders
+export default AdminOrders;

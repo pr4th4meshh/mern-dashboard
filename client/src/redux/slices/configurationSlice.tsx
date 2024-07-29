@@ -1,7 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { MODAL_STATE } from "../../common/states";
 
-const initialState = {
+interface ConfigurationState {
+  [MODAL_STATE.CREATE_PRODUCT_MODAL]: boolean;
+  [MODAL_STATE.UPDATE_PRODUCT_MODAL]: boolean;
+  [MODAL_STATE.UPDATE_USER_MODAL]: boolean;
+  [MODAL_STATE.CHANGE_ORDER_STATUS]: boolean;
+  product: null; // Replace `any` with the actual type of your product if you have one
+}
+
+const initialState: ConfigurationState = {
   [MODAL_STATE.CREATE_PRODUCT_MODAL]: false,
   [MODAL_STATE.UPDATE_PRODUCT_MODAL]: false,
   [MODAL_STATE.UPDATE_USER_MODAL]: false,
@@ -35,5 +43,5 @@ const slice = createSlice({
 });
 
 export const { toggleModal } = slice.actions;
-export const selectConfiguration = (state) => state.configuration;
+export const selectConfiguration = (state: {configuration: ConfigurationState}) => state.configuration;
 export default slice.reducer;

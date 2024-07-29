@@ -1,10 +1,10 @@
-import React, { useState, useMemo, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState, useMemo, useEffect } from "react"
+import { useNavigate, useParams } from "react-router-dom"
 import {
   useDeleteProductByIdMutation,
   useGetProductByIdQuery,
   useUpdateProductByIdMutation,
-} from "../../redux/slices/productsSlice";
+} from "../../redux/slices/productsSlice"
 import {
   Button,
   Form,
@@ -14,115 +14,144 @@ import {
   Tag,
   message,
   Upload,
-} from "antd";
-import { UploadOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useSelector } from "react-redux";
-import NestedLayout from "../../components/layouts/NestedLayout";
-import moment from "moment";
-import { CATEGORY_TYPES, SIZES } from "../../common/constants";
+  UploadFile,
+} from "antd"
+import { UploadOutlined, DeleteOutlined } from "@ant-design/icons"
+import { useSelector } from "react-redux"
+import NestedLayout from "../../components/layouts/NestedLayout"
+import moment from "moment"
+import { CATEGORY_TYPES, SIZES } from "../../common/constants"
 import {
   getStorage,
   ref,
   uploadBytesResumable,
   getDownloadURL,
-} from "firebase/storage";
-import Loading from "../../components/ui/Loading";
-import { app } from "../../firebase";
+} from "firebase/storage"
+import Loading from "../../components/ui/Loading"
+import { app } from "../../firebase"
+
+interface StateProps {
+  user: {
+    currentUser: {
+      role: string
+    }
+  }
+}
+
+// interface SingleProductData {
+//   name: string;
+//   description: string;
+//   price: number;
+//   category: string;
+//   sizes: string[];
+//   productImages: string[];
+//   createdAt: string;
+//   createdBy?: {
+//     username: string;
+//   };
+// }
+
+interface FormValues {
+  name: string
+  description: string
+  price: number
+  category: string
+  sizes: string[]
+  productImages: string[]
+}
 
 const SingleProduct = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>()
   const {
     data: singleProductData,
     refetch,
     isLoading,
-  } = useGetProductByIdQuery(id);
-  const [deleteProduct] = useDeleteProductByIdMutation();
-  const [updateProduct] = useUpdateProductByIdMutation();
+  } = useGetProductByIdQuery(id!)
+  const [deleteProduct] = useDeleteProductByIdMutation()
+  const [updateProduct] = useUpdateProductByIdMutation()
 
-  const user = useSelector((state) => state.user.user);
-  const navigate = useNavigate();
+  const user = useSelector((state: StateProps) => state.user.currentUser)
+  const navigate = useNavigate()
 
-  const [fileList, setFileList] = useState([]);
-  const [productImages, setProductImages] = useState<string[]>([]);
+  const [fileList, setFileList] = useState<UploadFile[]>([])
+  const [productImages, setProductImages] = useState<string[]>([])
 
   useEffect(() => {
     if (singleProductData && singleProductData.productImages) {
-      setProductImages(singleProductData.productImages);
+      setProductImages(singleProductData.productImages)
     }
-  }, [singleProductData]);
+  }, [singleProductData])
 
-  const handleFileChange = ({ fileList }: any) => {
-    setFileList(fileList);
-  };
+  const handleFileChange = ({ fileList }: { fileList: UploadFile[] }) => {
+    setFileList(fileList)
+  }
 
-  const handleFileUpload = (file: any) => {
-    return new Promise((resolve, reject) => {
-      const storage = getStorage(app);
-      const fileName = new Date().getTime() + file.name;
-      const storageRef = ref(storage, fileName);
-      const uploadTask = uploadBytesResumable(storageRef, file);
+  const handleFileUpload = (file: UploadFile) => {
+    return new Promise<string>((resolve, reject) => {
+      const storage = getStorage(app)
+      const fileName = new Date().getTime() + file.name
+      const storageRef = ref(storage, fileName)
+      const uploadTask = uploadBytesResumable(
+        storageRef,
+        file.originFileObj as Blob
+      )
 
       uploadTask.on(
         "state_changed",
         (snapshot) => {
           const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`Upload is ${progress}% done`);
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          console.log(`Upload is ${progress}% done`)
         },
         (error) => {
-          console.error("File upload error:", error);
-          message.error("Error uploading file");
-          reject(error);
+          console.error("File upload error:", error)
+          message.error("Error uploading file")
+          reject(error)
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setProductImages((prev) => [...prev, downloadURL]);
-            message.success("File uploaded successfully");
-            resolve(downloadURL);
-          });
+            setProductImages((prev) => [...prev, downloadURL])
+            message.success("File uploaded successfully")
+            resolve(downloadURL)
+          })
         }
-      );
-    });
-  };
+      )
+    })
+  }
 
   const handleDelete = async () => {
     try {
-      await deleteProduct(id).unwrap();
-      message.success("Product deleted");
-      navigate("/");
+      await deleteProduct(id!).unwrap()
+      message.success("Product deleted")
+      navigate("/")
     } catch (error) {
-      message.error(error.data.message);
+      message.error("Error while deleting the product")
+      console.log(error)
     }
-  };
+  }
 
-  const handleUpdate = async (values: any) => {
+  const handleUpdate = async (values: FormValues) => {
     try {
-      const uploadPromises = fileList.map((file) =>
-        handleFileUpload(file.originFileObj)
-      );
-      const uploadedImages = await Promise.all(uploadPromises);
+      const uploadPromises = fileList.map((file) => handleFileUpload(file))
+      const uploadedImages = await Promise.all(uploadPromises)
 
       // Update the productImages state after all uploads are complete
       const updatedValues = {
         ...values,
         productImages: [...productImages, ...uploadedImages],
-      };
-      await updateProduct({ id, ...updatedValues }).unwrap();
-      message.success("Product updated successfully!");
-      refetch();
-    } catch (error) {
-      if (error.data) {
-        message.error(error.data.message || "Error updating product");
-      } else {
-        message.error("An unknown error occurred");
       }
-      console.error("Error updating product:", error);
+      await updateProduct({ id, ...updatedValues }).unwrap()
+      message.success("Product updated successfully!")
+      refetch()
+    } catch (error) {
+      message.error("An unknown error occurred")
+      console.error("Error updating product:", error)
     }
-  };
+  }
 
   const handleDeleteImage = (image: string) => {
-    setProductImages((prev) => prev.filter((img) => img !== image));
-  };
+    setProductImages((prev) => prev.filter((img) => img !== image))
+  }
 
   const fields = useMemo(() => {
     if (!singleProductData)
@@ -132,19 +161,19 @@ const SingleProduct = () => {
         { name: ["price"], value: `Loading..` },
         { name: ["category"], value: `Loading...` },
         { name: ["sizes"], value: `Loading...` },
-      ];
+      ]
     return [
       { name: ["name"], value: `${singleProductData?.name}` },
       { name: ["description"], value: `${singleProductData?.description}` },
       { name: ["price"], value: singleProductData?.price },
       { name: ["category"], value: singleProductData?.category },
       { name: ["sizes"], value: singleProductData?.sizes },
-    ];
-  }, [singleProductData]);
+    ]
+  }, [singleProductData])
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <Loading />
 
   return (
     <NestedLayout
@@ -161,7 +190,7 @@ const SingleProduct = () => {
           form={form}
           fields={fields}
           onFinish={handleUpdate}
-          disabled={user.role === "user"}
+          disabled={user && user?.role === "user"}
         >
           <Form.Item
             label="Name"
@@ -283,7 +312,7 @@ const SingleProduct = () => {
         </Form>
       </div>
     </NestedLayout>
-  );
-};
+  )
+}
 
-export default SingleProduct;
+export default SingleProduct

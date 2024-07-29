@@ -1,31 +1,38 @@
-import React from "react";
-import { Form, Input, Button, message } from "antd";
-import { useSigninMutation } from "../../redux/slices/authSlice";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setUser } from "../../redux/slices/userSlice";
+import { Form, Input, Button, message } from "antd"
+import { useSigninMutation } from "../../redux/slices/authSlice"
+import { useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { setUser } from "../../redux/slices/userSlice"
 
 const Login = () => {
-  const [form] = Form.useForm();
-  const [signin, { isLoading }] = useSigninMutation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const [form] = Form.useForm()
+  const [signin, { isLoading }] = useSigninMutation()
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
-  const onFinish = async (values) => {
+  const onFinish = async (values: { email: string; password: string }) => {
     try {
-      const user = await signin(values).unwrap();
-      dispatch(setUser({ user: user, accessToken: user.token }));
-      message.success("Login successful!");
-      form.resetFields();
-      navigate("/");
+      const user = await signin(values).unwrap()
+      dispatch(setUser({ user: user, accessToken: user.token }))
+      message.success("Login successful!")
+      form.resetFields()
+      navigate("/")
     } catch (error) {
-      message.error(error?.data?.message || "Invalid Credentials, please try again");
+      message.error("Invalid Credentials, please try again")
+      console.log(error)
     }
-  };
+  }
 
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
+  const onFinishFailed = (errorInfo: {
+    values: { email: string; password: string }
+    errorFields: {
+      name: (string | number)[]
+      errors: string[]
+    }[]
+    outOfDate: boolean
+  }) => {
+    console.log("Failed:", errorInfo)
+  }
 
   return (
     <div className="flex justify-center items-center h-[100vh] bg-primary">
@@ -69,7 +76,7 @@ const Login = () => {
         </Form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

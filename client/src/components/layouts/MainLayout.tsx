@@ -1,15 +1,24 @@
 import React, { useState } from "react"
-import {
-  UserOutlined,
-} from "@ant-design/icons"
+import { UserOutlined } from "@ant-design/icons"
 import { Avatar, Layout, Menu, theme } from "antd"
 import { Link, Outlet, useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
 import { Footer } from "antd/es/layout/layout"
-import { selectCurrentUser } from "../../redux/slices/userSlice"
 import { getNavItems } from "../../common/siderLinks"
 
 const { Header, Content, Sider } = Layout
+
+interface UserState {
+  currentUser: {
+    _id: string
+    username: string
+    email: string
+    role: string
+  }
+  token: string | null
+  isLoading: boolean
+  error: string | null
+}
 
 const MainLayout: React.FC = () => {
   const {
@@ -19,7 +28,9 @@ const MainLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false)
 
   const navigate = useNavigate()
-  const user = useSelector(selectCurrentUser)
+  const user = useSelector(
+    (state: { user: UserState }) => state.user.currentUser
+  )
   const NAV_ITEMS = getNavItems(user)
 
   return (
@@ -39,7 +50,8 @@ const MainLayout: React.FC = () => {
               className="mr-2 bg-gray-500"
             />
             <h1 className="sm:text-md md:text-lg">
-              Hello, {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
+              Hello,{" "}
+              {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
             </h1>
           </div>
         </Menu>

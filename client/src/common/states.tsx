@@ -3,4 +3,4 @@ export const MODAL_STATE = {
     UPDATE_PRODUCT_MODAL: "updateProductModal",
     UPDATE_USER_MODAL: "updateUserModal",
     CHANGE_ORDER_STATUS: "updateOrderStatus",
-  }
+  } as const;

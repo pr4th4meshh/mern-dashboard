@@ -31,14 +31,14 @@ const Profile = () => {
     refetch()
   }, [refetch])
 
-  const handleUpdateUser = async (values) => {
+  const handleUpdateUser = async (values: {username: string, email: string}) => {
     try {
       const updatedUser = await updateUser({ id, ...values }).unwrap()
       message.success("User updated successfully!")
       dispatch(setUser(updatedUser))
       refetch()
     } catch (error) {
-      message.error(error.data.message || "Error while updating user")
+      message.error("Error while updating user")
     }
   }
 

@@ -1,5 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+interface UserState {
+  currentUser: {
+    _id: string;
+    username: string;
+    email: string;
+    role: string;
+  } | null;
+  token: string | null;
+  isLoading: boolean;
+  error: string | null;
+}
+
 const initialState = {
   currentUser: null,
   token: localStorage.getItem('access_token') || null,
@@ -37,10 +49,9 @@ const userSlice = createSlice({
 });
 
 export const { setUser, clearUser, setLoading, setError } = userSlice.actions;
-
-export const selectCurrentUser = (state) => state.user.currentUser;
-export const selectToken = (state) => state.user.token;
-export const selectLoading = (state) => state.user.isLoading;
-export const selectError = (state) => state.user.error;
+export const selectCurrentUser = (state: { user: UserState }) => state.user.currentUser;
+export const selectToken = (state: { user: UserState }) => state.user.token;
+export const selectLoading = (state: { user: UserState }) => state.user.isLoading;
+export const selectError = (state: { user: UserState }) => state.user.error;
 
 export default userSlice.reducer;

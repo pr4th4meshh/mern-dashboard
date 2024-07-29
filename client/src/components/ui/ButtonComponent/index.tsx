@@ -1,6 +1,6 @@
 import { Button, ButtonProps } from "antd"
 
-const ButtonComponent = ({ name, onClick, cn, icon, bgColor, isLoading }: ButtonProps) => {
+const ButtonComponent = ({ name, onClick, cn, icon, bgColor, loading }: ButtonProps) => {
   return (
     <Button
       type="primary"
@@ -8,7 +8,7 @@ const ButtonComponent = ({ name, onClick, cn, icon, bgColor, isLoading }: Button
       size="large"
       icon={icon}
       onClick={onClick}
-      loading={isLoading}
+      loading={loading}
     >
       {name}
     </Button>

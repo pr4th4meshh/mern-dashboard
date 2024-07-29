@@ -10,7 +10,7 @@ const ProductCard = ({
   createdBy,
   createdAt,
   loading,
-  productId
+  productId,
 }: Product) => {
   return (
     <>
@@ -24,24 +24,24 @@ const ProductCard = ({
         </Skeleton>
       ) : (
         <Link to={`/product/id/${productId}`}>
-        <Card className="w-full mt-4 min-h-min min-w-min">
-          <div className="flex items-center xs:flex-col lg:flex-row">
-            <Avatar icon={<ProductOutlined /> || icon} size={50} />
-            <div className="ml-5  flex flex-col">
-              <h1 className="text-lg uppercase font-semibold text-secondary pb-1">
-                {productName?.length > 10
-                  ? productName?.slice(0, 9) + ".."
-                  : productName}
-              </h1>
-              <span className="text-sm text-gray-500">
-                Created by {createdBy || "Insomnia"}
-              </span>
-              <span className="text-sm text-gray-500">
-                Created on {createdAt}
-              </span>
+          <Card className="w-full mt-4 min-h-min min-w-min">
+            <div className="flex items-center xs:flex-col lg:flex-row">
+              <Avatar icon={<ProductOutlined /> || icon} size={50} />
+              <div className="ml-5  flex flex-col">
+                <h1 className="text-lg uppercase font-semibold text-secondary pb-1">
+                  {productName && productName?.length > 10
+                    ? productName?.slice(0, 9) + ".."
+                    : productName}
+                </h1>
+                <span className="text-sm text-gray-500">
+                  Created by {createdBy || "Insomnia"}
+                </span>
+                <span className="text-sm text-gray-500">
+                  Created on {createdAt}
+                </span>
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
         </Link>
       )}
     </>

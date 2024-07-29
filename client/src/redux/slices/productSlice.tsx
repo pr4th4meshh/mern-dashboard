@@ -1,7 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  sizes: string[];
+  productImages: string[];
+  ratings: string[];
+}
+
 interface EventState {
-  product: any
+  product: Product | null;
 }
 
 const initialState: EventState = {
@@ -23,4 +34,4 @@ export const { setProduct } = productSlice.actions
 
 export default productSlice.reducer
 
-export const selectProduct = (state: any) => state.event.product
+export const selectProduct = (state: {product: EventState}) => state.product.product

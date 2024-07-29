@@ -3,12 +3,13 @@ import { Header } from "antd/es/layout/layout"
 import ButtonComponent from "../ButtonComponent"
 import { useSelector } from "react-redux"
 import { AppstoreAddOutlined } from "@ant-design/icons"
+import React from "react"
 
 type PageNavbarProps = {
   title: string
   canSearch: boolean
   buttonName: string
-  searchOnChange: () => void
+  searchOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   searchTerm: string
   onClick: () => void
 }
@@ -55,7 +56,7 @@ const PageNavbar = ({
             bgColor="bg-secondary"
             onClick={onClick}
             name={buttonName}
-            isLoading={null}
+            loading={false}
           />
         )}
       </div>

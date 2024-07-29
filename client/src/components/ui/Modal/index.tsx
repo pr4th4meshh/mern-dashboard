@@ -4,9 +4,9 @@ import { ReactNode } from "react"
 type ModalProps = {
     children: ReactNode
     modalTitle:string
-    open: () => void
+    open: boolean
     onCancel:() => void
-    footer?: string[]
+    footer?: ReactNode
 }
 
 const ModalComponent = ({ children, modalTitle, open, onCancel, footer }: ModalProps) => {

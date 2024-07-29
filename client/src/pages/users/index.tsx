@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import {
   Space,
   Table,
@@ -9,33 +9,42 @@ import {
   Button,
   Select,
   Popconfirm,
-} from "antd"
-import { DeleteOutlined } from "@ant-design/icons"
+} from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 import {
   useGetAllUsersQuery,
   useDeleteUserMutation,
   useUpdateUserMutation,
-} from "../../redux/slices/usersSlice"
-import Loading from "../../components/ui/Loading"
-import ModalComponent from "../../components/ui/Modal"
-import { useDispatch, useSelector } from "react-redux"
+} from "../../redux/slices/usersSlice";
+import Loading from "../../components/ui/Loading";
+import ModalComponent from "../../components/ui/Modal";
+import { useDispatch, useSelector } from "react-redux";
 import {
   toggleModal,
   selectConfiguration,
-} from "../../redux/slices/configurationSlice"
-import { MODAL_STATE } from "../../common/states"
-
+} from "../../redux/slices/configurationSlice";
+import { MODAL_STATE } from "../../common/states";
+import { Breakpoint } from "antd";
 interface Roles {
-  user: string
-  admin: string
-  superadmin: string
-  developer: string
+  user: string;
+  admin: string;
+  superadmin: string;
+  developer: string;
 }
+
 interface UserProps {
-  _id: string
-  username: string
-  email: string
-  role: Roles[]
+  _id: string;
+  username: string;
+  email: string;
+  role: keyof Roles;
+}
+
+interface FormValues {
+  username: string;
+  email: string;
+  role: keyof Roles;
+  newPassword?: string;
+  confirmPassword?: string;
 }
 
 const Users = () => {
@@ -44,77 +53,79 @@ const Users = () => {
     isLoading,
     isError,
     refetch,
-  } = useGetAllUsersQuery(undefined)
-  const [deleteUser] = useDeleteUserMutation()
-  const [updateUserMutation] = useUpdateUserMutation()
-  const [form] = Form.useForm()
-  const dispatch = useDispatch()
-  const Configuration = useSelector(selectConfiguration)
-  const [selectedUser, setSelectedUser] = useState<UserProps | null>(null)
-  const [isChangePassword, setIsChangePassword] = useState(false)
+  } = useGetAllUsersQuery(undefined);
+  const [deleteUser] = useDeleteUserMutation();
+  const [updateUserMutation] = useUpdateUserMutation();
+  const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const Configuration = useSelector(selectConfiguration);
+  const [selectedUser, setSelectedUser] = useState<UserProps | null>(null);
+  const [isChangePassword, setIsChangePassword] = useState(false);
 
   useEffect(() => {
-    refetch()
-  }, [refetch])
+    refetch();
+  }, [refetch]);
 
   const handleEdit = (user: UserProps) => {
-    setSelectedUser(user)
-    setIsChangePassword(false)
-    dispatch(toggleModal(MODAL_STATE.UPDATE_USER_MODAL))
+    setSelectedUser(user);
+    setIsChangePassword(false);
+    dispatch(toggleModal(MODAL_STATE.UPDATE_USER_MODAL));
     form.setFieldsValue({
       username: user.username,
       email: user.email,
       role: user.role,
-    })
-  }
+    });
+  };
 
   const handleChangePassword = (user: UserProps) => {
-    setSelectedUser(user)
-    setIsChangePassword(true)
-    dispatch(toggleModal(MODAL_STATE.UPDATE_USER_MODAL))
-    form.resetFields()
-  }
+    setSelectedUser(user);
+    setIsChangePassword(true);
+    dispatch(toggleModal(MODAL_STATE.UPDATE_USER_MODAL));
+    form.resetFields();
+  };
 
   const handleDeleteUser = async (userId: string) => {
     try {
-      await deleteUser(userId).unwrap()
-      message.success("User deleted successfully!")
-      refetch()
+      await deleteUser(userId).unwrap();
+      message.success("User deleted successfully!");
+      refetch();
     } catch (error) {
-      message.error(error.message || "Error while deleting user")
+      message.error("Error while deleting user");
+      console.log(error);
     }
-  }
+  };
 
-  const handleUpdateUser = async (values) => {
+  const handleUpdateUser = async (values: FormValues) => {
     try {
       if (isChangePassword) {
         if (values.newPassword !== values.confirmPassword) {
-          message.error("Passwords do not match!")
-          return
+          message.error("Passwords do not match!");
+          return;
         }
         await updateUserMutation({
-          id: selectedUser._id,
+          id: selectedUser!._id,
           ...values,
           password: values.newPassword,
-        }).unwrap()
-        message.success("Password updated successfully!")
+        }).unwrap();
+        message.success("Password updated successfully!");
       } else {
-        await updateUserMutation({ id: selectedUser._id, ...values }).unwrap()
-        message.success("User updated successfully!")
+        await updateUserMutation({ id: selectedUser!._id, ...values }).unwrap();
+        message.success("User updated successfully!");
       }
-      refetch()
-      dispatch(toggleModal(MODAL_STATE.UPDATE_USER_MODAL))
+      refetch();
+      dispatch(toggleModal(MODAL_STATE.UPDATE_USER_MODAL));
     } catch (error) {
-      message.error(error.message || "Error updating user")
+      message.error("Error updating user");
+      console.log(error)
     }
-  }
+  };
 
   const roles = [
     { value: "user", title: "User" },
     { value: "admin", title: "Admin" },
     { value: "superadmin", title: "Superadmin" },
     { value: "developer", title: "Developer" },
-  ]
+  ];
 
   const columns = [
     {
@@ -129,13 +140,13 @@ const Users = () => {
       title: "Email",
       dataIndex: "email",
       key: "email",
-      responsive: ['md'],
+      responsive: ['md'] as Breakpoint[],
     },
     {
       title: "Role",
       dataIndex: "role",
       key: "role",
-      render: (role: string) => (
+      render: (role: keyof Roles) => (
         <Tag
           color={
             role === "user"
@@ -154,7 +165,7 @@ const Users = () => {
     {
       title: "Action",
       key: "action",
-      responsive: ['lg'],
+      responsive: ['lg'] as Breakpoint[],
       render: (record: UserProps) => (
         <Space size="middle">
           <a className="text-blue-500" onClick={() => handleEdit(record)}>
@@ -180,17 +191,17 @@ const Users = () => {
         </Space>
       ),
     },
-  ]
+  ];
 
   const pagination = {
     pageSize: 8,
     total: getAllUsers?.length,
-    showTotal: (total, range) =>
+    showTotal: (total: number, range: [number, number]) =>
       `Showing ${range[0]}-${range[1]} of ${total} items`,
-  }
+  };
 
-  if (isLoading) return <Loading />
-  if (isError) return <div>Error fetching data</div>
+  if (isLoading) return <Loading />;
+  if (isError) return <div>Error fetching data</div>;
 
   return (
     <div className="sm:p-2 md:p-6">
@@ -292,7 +303,7 @@ const Users = () => {
         </Form>
       </ModalComponent>
     </div>
-  )
-}
+  );
+};
 
-export default Users
+export default Users;

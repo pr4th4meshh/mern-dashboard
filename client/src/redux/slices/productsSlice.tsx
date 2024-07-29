@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
+import { RootState } from "../store"
 
 export const productsSlice = createApi({
   reducerPath: "products",
@@ -7,7 +8,8 @@ export const productsSlice = createApi({
     baseUrl: "http://localhost:5000/api/products",
     credentials: "include",
     prepareHeaders: (headers, { getState }) => {
-      const token = getState().user.token
+      const state = getState() as RootState
+      const token = state.user.token
       if (token) {
         headers.set("Authorization", `Bearer ${token}`)
       }
@@ -41,16 +43,20 @@ export const productsSlice = createApi({
       query: (id) => ({
         url: `/delete/${id}`,
         method: "DELETE",
-      })
+      }),
     }),
     updateProductById: builder.mutation({
       invalidatesTags: ["Product"],
-      query: ({id, ...values}) => ({
+      query: ({ id, ...values }) => ({
         url: `/update/${id}`,
         method: "PUT",
-        body: values
-      })
-    })
+        body: values,
+      }),
+    }),
+    getAllCategories: builder.query({
+      providesTags: ["Product"],
+      query: () => "/categories/all",
+    }),
   }),
 })
 
@@ -59,5 +65,6 @@ export const {
   useCreateProductMutation,
   useGetProductByIdQuery,
   useDeleteProductByIdMutation,
-  useUpdateProductByIdMutation
+  useUpdateProductByIdMutation,
+  useGetAllCategoriesQuery
 } = productsSlice

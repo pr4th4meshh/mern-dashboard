@@ -1,48 +1,59 @@
-import { useEffect, useState } from "react"
-import { useGetAllProductsQuery } from "../../redux/slices/productsSlice"
-import PageNavbar from "../../components/ui/PageNavbar"
-import useDebounce from "../../hooks/useDebounceHook"
-import NotFoundComponent from "../../components/ui/NotFound"
-import CreateProduct from "./components/CreateProduct"
-import { useDispatch } from "react-redux"
-import { toggleModal } from "../../redux/slices/configurationSlice"
-import { MODAL_STATE } from "../../common/states"
-import Loading from "../../components/ui/Loading"
-import { List } from "antd"
-import ListItemComponent from "./components/ListItemCompo"
+import { useEffect, useState } from "react";
+import { useGetAllProductsQuery } from "../../redux/slices/productsSlice";
+import PageNavbar from "../../components/ui/PageNavbar";
+import useDebounce from "../../hooks/useDebounceHook";
+import NotFoundComponent from "../../components/ui/NotFound";
+import CreateProduct from "./components/CreateProduct";
+import { useDispatch } from "react-redux";
+import { toggleModal } from "../../redux/slices/configurationSlice";
+import { MODAL_STATE } from "../../common/states";
+import Loading from "../../components/ui/Loading";
+import { List } from "antd";
+import ListItemComponent from "./components/ListItemCompo";
+
+interface ItemProps {
+  _id: string;
+  name: string;
+  description: string;
+  productImages: string[];
+  createdBy?: {
+    username: string;
+  };
+  createdAt?: string;
+}
 
 const Products = () => {
-  const [searchTerm, setSearchTerm] = useState("")
-  const debouncedSearchTerm = useDebounce(searchTerm, 500)
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const {
     data: products,
     error: productsError,
     isLoading: productsLoading,
     refetch: refetchProducts,
-  } = useGetAllProductsQuery(debouncedSearchTerm || undefined)
+  } = useGetAllProductsQuery(debouncedSearchTerm || undefined);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const handleInputChange = (e) => {
-    setSearchTerm(e.target.value)
-  }
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
 
   useEffect(() => {
     if (!debouncedSearchTerm) {
-      refetchProducts()
+      refetchProducts();
     }
-  }, [debouncedSearchTerm, refetchProducts])
+  }, [debouncedSearchTerm, refetchProducts]);
 
-  if (productsLoading) return <Loading />
+  if (productsLoading) return <Loading />;
   if (productsError) {
-    const errorMessage = productsError?.message
-    return <p>Error fetching products: {errorMessage}</p>
+    const errorMessage = (productsError as { message: string }).message;
+    return <p>Error fetching products: {errorMessage}</p>;
   }
 
-  const displayedProducts = products || []
-  if (!displayedProducts) {
-    ;<NotFoundComponent pageTitle="Products" />
+  const displayedProducts = products || [];
+  if (!displayedProducts.length) {
+    return <NotFoundComponent pageTitle="Products" />;
   }
 
   return (
@@ -79,10 +90,10 @@ const Products = () => {
         }}
         locale={{ emptyText: "No products to display!" }}
         dataSource={displayedProducts}
-        renderItem={(item: any) => <ListItemComponent item={item} />}
+        renderItem={(item: ItemProps) => <ListItemComponent item={item} />}
       />
     </div>
-  )
-}
+  );
+};
 
-export default Products
+export default Products;

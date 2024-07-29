@@ -25,7 +25,13 @@ const CreateProduct = () => {
     dispatch(toggleModal(MODAL_STATE.CREATE_PRODUCT_MODAL))
   }
 
-  const onFinish = async (values) => {
+  const onFinish = async (values: {
+    name: string
+    category: string[]
+    description: string
+    sizes: string[]
+    price: number
+  }) => {
     try {
       await createProduct({
         ...values,
@@ -36,9 +42,7 @@ const CreateProduct = () => {
       refetch()
       toggle()
     } catch (error) {
-      message.error(
-        error.data?.message || error.message || "Error creating product"
-      )
+      message.error("Error creating product")
     }
   }
 
