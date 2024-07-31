@@ -5,7 +5,7 @@ export const adminOrdersSlice = createApi({
   reducerPath: "adminOrders",
   tagTypes: ["AdminOrders"],
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/orders",
+    baseUrl: `${import.meta.env.VITE_BASE_URL}/orders`,
     credentials: "include",
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as RootState

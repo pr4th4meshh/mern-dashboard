@@ -5,7 +5,7 @@ export const productsSlice = createApi({
   reducerPath: "products",
   tagTypes: ["Product"],
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/products",
+    baseUrl: `${import.meta.env.VITE_BASE_URL}/products`,
     credentials: "include",
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as RootState

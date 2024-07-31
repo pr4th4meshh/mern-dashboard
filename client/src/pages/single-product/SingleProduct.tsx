@@ -66,7 +66,7 @@ const SingleProduct = () => {
     data: singleProductData,
     refetch,
     isLoading,
-  } = useGetProductByIdQuery(id!)
+  } = useGetProductByIdQuery(id)
   const [deleteProduct] = useDeleteProductByIdMutation()
   const [updateProduct] = useUpdateProductByIdMutation()
 

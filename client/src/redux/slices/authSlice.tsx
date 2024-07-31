@@ -1,12 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { setUser } from "./userSlice" // Import actions from userSlice
-import { BASE_URL } from "../../env"
 import { RootState } from "../store"
 
 export const authSlice = createApi({
   reducerPath: "authSlice",
   baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
+    baseUrl: `${import.meta.env.VITE_BASE_URL}/auth`,
     credentials: "include",
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as RootState

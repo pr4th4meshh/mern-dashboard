@@ -5,7 +5,7 @@ export const categorySlice = createApi({
   reducerPath: "categories",
   tagTypes: ["Category"],
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/category",
+    baseUrl: `${import.meta.env.VITE_BASE_URL}/category`,
     credentials: "include",
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as RootState
