@@ -1,10 +1,10 @@
 import { Button, ButtonProps } from "antd"
 
-const ButtonComponent = ({ name, onClick, cn, icon, bgColor, loading }: ButtonProps) => {
+const ButtonComponent = ({ name, onClick, icon, bgColor, loading }: ButtonProps) => {
   return (
     <Button
       type="primary"
-      className={`${cn} ${bgColor} flex text-primary`}
+      className={`${bgColor} flex text-primary`}
       size="large"
       icon={icon}
       onClick={onClick}
