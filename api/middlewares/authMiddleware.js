@@ -6,7 +6,7 @@ export const verifyToken = (roles) => async (req, res, next) => {
   if (!token) return res.status(401).json({ message: "Token not found!" })
 
   try {
-    const decoded = jwt.verify(token, "thisismyjwtsecretkeyforthisapp")
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY)
     const user = await User.findById(decoded.id)
     if (!roles.includes(user.role)) {
       return res.status(403).json({ message: "You need to be a admin to perform this action.." })
