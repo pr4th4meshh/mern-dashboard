@@ -10,6 +10,7 @@ import orderRouter from "./client-api/routes/order.route.js"
 import paymentRouter from "./client-api/routes/payment.route.js"
 import productsRouter from "./admin-api/routes/product.route.js"
 import cookieParser from "cookie-parser"
+import path from "path"
 
 dotenv.config()
 
@@ -22,6 +23,9 @@ mongoose
   .catch((err) => {
     console.log(err)
   })
+
+  const __dirname = path.resolve();
+
 
 const corsOptions = {
   origin: [
@@ -61,3 +65,9 @@ app.use("/api/test", testRouter)
 app.use("/api/products", productsRouter)
 app.use("/api/orders", orderRouter)
 app.use("/api/payment", paymentRouter )
+
+app.use(express.static(path.join(__dirname, '/client/dist')))
+
+app.use("*", (req, res) =>{
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"))
+})
