@@ -55,8 +55,7 @@ const Profile: React.FC = () => {
             name="Logout"
             onClick={handleSignout}
             bgColor="bg-red-500"
-            cn=""
-            isLoading={signoutLoading}
+            loading={signoutLoading}
           />
         </div>
 

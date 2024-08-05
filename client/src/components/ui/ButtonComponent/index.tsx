@@ -1,4 +1,12 @@
-import { Button, ButtonProps } from "antd"
+import { Button } from "antd"
+
+interface ButtonProps {
+  name?: string
+  onClick?: () => void
+  icon?: string | React.ReactNode
+  bgColor?: string
+  loading?: boolean
+}
 
 const ButtonComponent = ({ name, onClick, icon, bgColor, loading }: ButtonProps) => {
   return (
