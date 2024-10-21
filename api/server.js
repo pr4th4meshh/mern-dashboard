@@ -24,14 +24,17 @@ mongoose
     console.log(err)
   })
 
-  const __dirname = path.resolve();
-
+const __dirname = path.resolve()
 
 const corsOptions = {
   origin: [
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3002",
+    "http://localhost:3003",
+    "http://localhost:3004",
     "http://localhost:8000",
   ],
   credentials: true,
@@ -64,10 +67,10 @@ app.use("/api/auth/client", clientRouter)
 app.use("/api/test", testRouter)
 app.use("/api/products", productsRouter)
 app.use("/api/orders", orderRouter)
-app.use("/api/payment", paymentRouter )
+app.use("/api/payment", paymentRouter)
 
-app.use(express.static(path.join(__dirname, '/client/dist')))
+app.use(express.static(path.join(__dirname, "/client/dist")))
 
-app.use("*", (req, res) =>{
+app.use("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "dist", "index.html"))
 })

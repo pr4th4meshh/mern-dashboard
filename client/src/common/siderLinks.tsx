@@ -4,6 +4,7 @@ import {
   UserOutlined,
   UsergroupAddOutlined,
   OrderedListOutlined,
+  SmileOutlined,
 } from "@ant-design/icons"
 
 interface UserProps {
@@ -19,6 +20,7 @@ export const getNavItems = (user: UserProps) => {
   const SUPER_ADMIN_ITEMS = [
     { label: "Products", key: "/", icon: <ProductOutlined /> },
     { label: "Dashboard", key: "/dashboard", icon: <LaptopOutlined /> },
+    { label: "Discounts", key: "/discounts", icon: <SmileOutlined /> },
     { label: "Orders", key: `/orders`, icon: <OrderedListOutlined /> },
     { label: "Users", key: `/users`, icon: <UsergroupAddOutlined /> },
     { label: "Profile", key: `/profile/${_id}`, icon: <UserOutlined /> },
@@ -27,6 +29,7 @@ export const getNavItems = (user: UserProps) => {
   const ADMIN_ITEMS = [
     { label: "Products", key: "/", icon: <ProductOutlined /> },
     { label: "Dashboard", key: "/dashboard", icon: <LaptopOutlined /> },
+    { label: "Discounts", key: "/discounts", icon: <SmileOutlined /> },
     { label: "Orders", key: `/orders`, icon: <OrderedListOutlined /> },
     { label: "Users", key: `/users`, icon: <UsergroupAddOutlined /> },
     { label: "Profile", key: `/profile/${_id}`, icon: <UserOutlined /> },
@@ -35,6 +38,7 @@ export const getNavItems = (user: UserProps) => {
   const DEVELOPER_ITEMS = [
     { label: "Products", key: "/", icon: <ProductOutlined /> },
     { label: "Dashboard", key: "/dashboard", icon: <LaptopOutlined /> },
+    { label: "Discounts", key: "/discounts", icon: <SmileOutlined /> },
     { label: "Orders", key: `/orders`, icon: <OrderedListOutlined /> },
     { label: "Users", key: `/users`, icon: <UsergroupAddOutlined /> },
     { label: "Profile", key: `/profile/${_id}`, icon: <UserOutlined /> },

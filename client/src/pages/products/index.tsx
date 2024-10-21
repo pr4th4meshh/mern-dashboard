@@ -33,6 +33,7 @@ const Products = () => {
     refetch: refetchProducts,
   } = useGetAllProductsQuery(debouncedSearchTerm || undefined);
 
+  console.log(products)
   const dispatch = useDispatch();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
