@@ -4,6 +4,7 @@ export const createDiscount = async (req, res, next) => {
   const {
     code,
     discountType,
+    discountValue,
     specialDiscount,
     specialDiscountCode,
     usageLimit,
@@ -32,6 +33,7 @@ export const createDiscount = async (req, res, next) => {
     const newDiscount = new Discount({
       code,
       discountType,
+      discountValue,
       specialDiscount,
       specialDiscountCode,
       usageLimit,
@@ -60,7 +62,7 @@ export const getAllDiscounts = async (req, res, next) => {
 export const getDiscountByCode = async (req, res, next) => {
   const { code } = req.params
   try {
-    const discount = await Discount.find({
+    const discount = await Discount.findOne({
       code: { $regex: code, $options: "i" },
     })
       .populate("createdBy", "username")
@@ -113,6 +115,7 @@ export const updateDiscountCode = async (req, res, next) => {
   const {
     code,
     discountType,
+    discountValue,
     specialDiscount,
     specialDiscountCode,
     usageLimit,
@@ -126,6 +129,7 @@ export const updateDiscountCode = async (req, res, next) => {
       {
         code,
         discountType,
+        discountValue,
         specialDiscount,
         specialDiscountCode,
         usageLimit,
