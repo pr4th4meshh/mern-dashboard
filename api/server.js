@@ -9,6 +9,7 @@ import clientRouter from "./client-api/routes/client.route.js"
 import orderRouter from "./client-api/routes/order.route.js"
 import paymentRouter from "./client-api/routes/payment.route.js"
 import productsRouter from "./admin-api/routes/product.route.js"
+import discountRouter from "./admin-api/routes/discount.route.js"
 import cookieParser from "cookie-parser"
 import path from "path"
 
@@ -68,6 +69,7 @@ app.use("/api/test", testRouter)
 app.use("/api/products", productsRouter)
 app.use("/api/orders", orderRouter)
 app.use("/api/payment", paymentRouter)
+app.use('/api/discount', discountRouter)
 
 app.use(express.static(path.join(__dirname, "/client/dist")))
 
