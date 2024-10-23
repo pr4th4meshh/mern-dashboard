@@ -55,7 +55,7 @@ const CreateProduct = () => {
       <ModalComponent
         open={Configuration[MODAL_STATE.CREATE_PRODUCT_MODAL]}
         onCancel={toggle}
-        modalTitle="Product"
+        modalTitle="Create Product"
       >
         <Form
           className="p-5 w-full bg-white"

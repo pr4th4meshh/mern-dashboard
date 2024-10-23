@@ -18,7 +18,7 @@ const ModalComponent = ({ children, modalTitle, open, onCancel, footer }: ModalP
       <Modal
         open={open}
         onCancel={handleCancel}
-        title={`Create ${modalTitle}`}
+        title={modalTitle}
         okButtonProps={{ hidden: true }}
         cancelButtonProps={{ hidden: true }}
         footer={footer}

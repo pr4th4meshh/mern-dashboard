@@ -21,7 +21,7 @@ router.get("/all", getAllDiscounts)
 router.get("/code/:code", getDiscountByCode)
 router.get("/id/:id", getDiscountById)
 router.delete(
-  "/code/:id",
+  "/discountId/:id",
   verifyToken(["admin", "superadmin", "developer"]),
   deleteDiscountCode
 )

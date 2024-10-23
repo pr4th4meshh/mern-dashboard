@@ -10,6 +10,7 @@ import { productsSlice } from "./slices/productsSlice"
 import { usersSlice } from "./slices/usersSlice"
 import { categorySlice } from "./slices/categorySlice"
 import { adminOrdersSlice } from "./slices/ordersApiSlice"
+import { discountApiSlice } from "./apis/discountApiSlice"
 
 const rootReducer = combineReducers({
   [authSlice.reducerPath]: authSlice.reducer,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   [usersSlice.reducerPath]: usersSlice.reducer,
   [categorySlice.reducerPath]: categorySlice.reducer,
   [adminOrdersSlice.reducerPath]: adminOrdersSlice.reducer,
+  [discountApiSlice.reducerPath]: discountApiSlice.reducer,
   user: userReducer,
   product: productReducer,
   configuration: configurationReducer,
@@ -38,7 +40,8 @@ export const store = configureStore({
       .concat(productsSlice.middleware)
       .concat(usersSlice.middleware)
       .concat(categorySlice.middleware)
-      .concat(adminOrdersSlice.middleware),
+      .concat(adminOrdersSlice.middleware)
+      .concat(discountApiSlice.middleware)
 })
 
 export const persistor = persistStore(store)

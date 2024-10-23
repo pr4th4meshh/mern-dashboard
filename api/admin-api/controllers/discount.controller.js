@@ -6,7 +6,6 @@ export const createDiscount = async (req, res, next) => {
     discountType,
     discountValue,
     specialDiscount,
-    specialDiscountCode,
     usageLimit,
     minimumPriceToAvail,
     active,
@@ -20,22 +19,11 @@ export const createDiscount = async (req, res, next) => {
       return res.status(400).json({ message: "Coupon code already exists" })
     }
 
-    // check for existing special discount code to avoid multiple coupons with same code
-    const existingSpecialCouponCode = await Discount.findOne({
-      specialDiscountCode,
-    })
-    if (existingSpecialCouponCode) {
-      return res
-        .status(400)
-        .json({ message: "Special coupon code already exists" })
-    }
-
     const newDiscount = new Discount({
       code,
       discountType,
       discountValue,
       specialDiscount,
-      specialDiscountCode,
       usageLimit,
       minimumPriceToAvail,
       active,
@@ -117,7 +105,6 @@ export const updateDiscountCode = async (req, res, next) => {
     discountType,
     discountValue,
     specialDiscount,
-    specialDiscountCode,
     usageLimit,
     minimumPriceToAvail,
     active,
@@ -131,7 +118,6 @@ export const updateDiscountCode = async (req, res, next) => {
         discountType,
         discountValue,
         specialDiscount,
-        specialDiscountCode,
         usageLimit,
         minimumPriceToAvail,
         active,
