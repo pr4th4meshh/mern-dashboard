@@ -21,9 +21,6 @@ const discountSchema = mongoose.Schema(
       type: Boolean,
       required: true,
     },
-    specialDiscountCode: {
-      type: String,
-    },
     usageLimit: {
       type: Number,
       required: true,
