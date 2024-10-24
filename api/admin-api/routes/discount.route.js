@@ -1,11 +1,13 @@
 import express from "express"
 import {
+  applyDiscount,
   createDiscount,
   deleteDiscountCode,
   getAllDiscounts,
   getDiscountByCode,
   getDiscountById,
   updateDiscountCode,
+  validateDiscount,
 } from "../controllers/discount.controller.js"
 import { verifyToken } from "../../middlewares/authMiddleware.js"
 
@@ -30,5 +32,8 @@ router.put(
   verifyToken(["admin", "superadmin", "developer"]),
   updateDiscountCode
 )
+
+router.post("/validate-discount", validateDiscount)
+router.post("/apply-discount", applyDiscount)
 
 export default router

@@ -140,3 +140,64 @@ export const updateDiscountCode = async (req, res, next) => {
     next(error)
   }
 }
+
+export const validateDiscount = async (req, res, next) => {
+  const { code, cartTotal } = req.body;
+  try {
+    const discount = await Discount.findOne({ code });
+    if (!discount) {
+      return res.status(404).json({ message: "Discount code not found" });
+    }
+    if (!discount.active) {
+      return res.status(400).json({ message: "Discount code is inactive" });
+    }
+    if (discount.usageCount >= discount.usageLimit) {
+      return res.status(400).json({ message: "Coupon usage limit reached" });
+    }
+    if (cartTotal < Number(discount.minimumPriceToAvail)) {
+      return res.status(400).json({ message: "Minimum price to avail discount not met" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Discount coupon applied successfully!",
+      discount: {
+        code: discount.code,
+        discountType: discount.discountType,
+        discountValue: discount.discountValue,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const applyDiscount = async (req, res, next) => {
+  const { code } = req.body;
+
+  try {
+    const discount = await Discount.findOne({ code });
+    if (!discount || !discount.active) {
+      return res.status(400).json({ message: "Invalid or inactive discount code" });
+    }
+
+    if (discount.usageCount >= discount.usageLimit) {
+      return res.status(400).json({ message: "Coupon usage limit reached" });
+    }
+
+    discount.usageCount += 1;
+    await discount.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Discount applied successfully",
+      discount: {
+        code: discount.code,
+        discountType: discount.discountType,
+        discountValue: discount.discountValue,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
