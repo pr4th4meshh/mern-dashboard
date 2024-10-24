@@ -25,6 +25,10 @@ const discountSchema = mongoose.Schema(
       type: Number,
       required: true,
     },
+    usageCount: {
+      type: Number,
+      default: 0
+    },
     minimumPriceToAvail: {
       type: String,
       required: true,

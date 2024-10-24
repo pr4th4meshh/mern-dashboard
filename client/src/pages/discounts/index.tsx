@@ -26,7 +26,8 @@ import {
 import { MODAL_STATE } from "../../common/states"
 import CreateDiscount from "./components/CreateDiscount"
 import ModalComponent from "../../components/ui/Modal"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import useDebounceHook from "../../hooks/useDebounceHook"
 
 interface ICouponCode {
   _id: string
@@ -35,12 +36,16 @@ interface ICouponCode {
   discountValue: number
   specialDiscount: boolean
   usageLimit: number
+  usageCount: number
   minimumPriceToAvail: number
   active: boolean
 }
 
 const Discounts = () => {
   const [currentCoupon, setCurrentCoupon] = useState<ICouponCode | null>(null)
+  const [searchTerm, setSearchTerm] = useState("")
+  const debouncedSearchTerm = useDebounceHook(searchTerm, 500)
+
   const {
     data: discountCodes,
     isLoading: discountCodesLoading,
@@ -51,6 +56,10 @@ const Discounts = () => {
 
   const Configuration = useSelector(selectConfiguration)
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    refetchDiscountCodes()
+  },[refetchDiscountCodes])
 
   const [form] = Form.useForm()
 
@@ -63,15 +72,18 @@ const Discounts = () => {
       discountValue: coupon?.discountValue,
       specialDiscount: coupon?.specialDiscount,
       usageLimit: coupon?.usageLimit,
+      usageCount: coupon?.usageCount,
       minimumPriceToAvail: coupon?.minimumPriceToAvail,
-      active: coupon?.active
-    });
+      active: coupon?.active,
+    })
   }
 
   const handleEditDiscountCoupon = async (values: ICouponCode) => {
     try {
-      const couponToBeEdited = await udpateDiscountCode({id: currentCoupon?._id , ...values}).unwrap()
-      console.log("VALUES", values)
+      const couponToBeEdited = await udpateDiscountCode({
+        id: currentCoupon?._id,
+        ...values,
+      }).unwrap()
       console.log(couponToBeEdited)
       message.success("Coupon Edited Successfully")
       refetchDiscountCodes()
@@ -132,6 +144,12 @@ const Discounts = () => {
       responsive: ["md"] as Breakpoint[],
     },
     {
+      title: "Usage Count",
+      dataIndex: "usageCount",
+      key: "usageCount",
+      responsive: ["md"] as Breakpoint[],
+    },
+    {
       title: "Minimum Price To Avail",
       dataIndex: "minimumPriceToAvail",
       key: "minimumPriceToAvail",
@@ -173,15 +191,18 @@ const Discounts = () => {
     },
   ]
 
+  if (discountCodesLoading) return <Loading />
+
+  const filteredDiscountCodes = discountCodes?.filter((coupon: ICouponCode) =>
+    coupon.code.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+  )
+
   const pagination = {
     pageSize: 8,
-    total: discountCodes?.length,
+    total: filteredDiscountCodes?.length,
     showTotal: (total: number, range: [number, number]) =>
       `Showing ${range[0]}-${range[1]} of ${total} items`,
   }
-
-  if (discountCodesLoading) return <Loading />
-  // if (isError) return <div>Error fetching data</div>;
   return (
     <div>
       <CreateDiscount />
@@ -189,17 +210,15 @@ const Discounts = () => {
         title="Discounts"
         canSearch={true}
         buttonName="Create Discount"
-        searchOnChange={function (): void {
-          message.info("Function is not implemented yet")
-        }}
-        searchTerm={""}
+        searchOnChange={(e) => setSearchTerm(e.target.value)}
+        searchTerm={searchTerm}
         onClick={() => dispatch(toggleModal(MODAL_STATE.CREATE_DISCOUNT_MODAL))}
       />
 
       <Table
         loading={discountCodesLoading}
         pagination={pagination}
-        dataSource={discountCodes}
+        dataSource={filteredDiscountCodes}
         columns={columns}
       />
 
@@ -213,15 +232,16 @@ const Discounts = () => {
         <Form
           className="p-5 w-full bg-white"
           layout="vertical"
-          initialValues={{ 
+          initialValues={{
             code: currentCoupon?.code,
             discountType: currentCoupon?.discountType,
             discountValue: currentCoupon?.discountValue,
             specialDiscount: currentCoupon?.specialDiscount,
             usageLimit: currentCoupon?.usageLimit,
+            usageCount: currentCoupon?.usageCount,
             minimumPriceToAvail: currentCoupon?.minimumPriceToAvail,
-            active: currentCoupon?.active
-           }}
+            active: currentCoupon?.active,
+          }}
           onFinish={handleEditDiscountCoupon}
           autoComplete="off"
           form={form}
@@ -284,6 +304,19 @@ const Discounts = () => {
           </Form.Item>
 
           <Form.Item
+            label="Usage Count"
+            name="usageCount"
+            rules={[{ required: true, message: "Usage count.." }]}
+          >
+            <Input
+              placeholder="Usage count.."
+              type="number"
+              className="w-full"
+              disabled
+            />
+          </Form.Item>
+
+          <Form.Item
             label="Minimum price to avail discount"
             name="minimumPriceToAvail"
             rules={[
@@ -325,7 +358,6 @@ const Discounts = () => {
               className="w-full bg-secondary"
               type="primary"
               htmlType="submit"
-              loading={false}
             >
               Update
             </Button>
