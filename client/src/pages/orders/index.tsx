@@ -29,7 +29,8 @@ type OrderStatus =
   | "order confirmed"
   | "processing order"
   | "order out for delivery"
-  | "order delivered";
+  | "order delivered"
+  | "cancelled"
 
 type Order = {
   _id: string;
@@ -113,7 +114,7 @@ const AdminOrders = () => {
               : record.status === "processing order"
               ? "blue"
               : record.status === "order out for delivery"
-              ? "cyan"
+              ? "cyan" : record.status === "cancelled" ? "red" 
               : "green"
           }
         >

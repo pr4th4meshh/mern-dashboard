@@ -5,12 +5,18 @@ import Client from "../models/client.model.js"
 export const createOrder = async (req, res) => {
   try {
     const { user, phoneNumber, deliveryAddress, products } = req.body
-    
-    if (!user || !phoneNumber || !deliveryAddress || !products || !products.length) {
-      return res.status(400).json({ message: "All fields are required" });
+
+    if (
+      !user ||
+      !phoneNumber ||
+      !deliveryAddress ||
+      !products ||
+      !products.length
+    ) {
+      return res.status(400).json({ message: "All fields are required" })
     }
 
-    console.log('Received products:', products);
+    console.log("Received products:", products)
 
     const newOrder = new Order({ user, phoneNumber, deliveryAddress, products })
     await newOrder.save()
@@ -23,7 +29,6 @@ export const createOrder = async (req, res) => {
     res.status(500).json({ message: "Error creating order", error })
   }
 }
-
 
 // Get order status
 export const getOrderStatus = async (req, res) => {
@@ -74,7 +79,7 @@ export const getAllUserOrders = async (req, res) => {
     const orders = await Order.find({ user: req.params.id })
       .populate({
         path: "products.product",
-        select: "name description price category productImages"
+        select: "name description price category productImages",
       })
       .exec()
 
@@ -87,3 +92,25 @@ export const getAllUserOrders = async (req, res) => {
     res.status(500).json({ message: "Error fetching orders", error })
   }
 }
+
+export const cancelOrder = async (req, res, next) => {
+  const { orderId } = req.body;
+
+  try {
+    const orderToBeCancelled = await Order.findByIdAndUpdate(
+      orderId,
+      { status: "cancelled" },
+      { new: true }
+    );
+
+    if (!orderToBeCancelled) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    console.log("Order cancelled:", orderToBeCancelled);
+    res.status(200).json({ message: "Order cancelled successfully" });
+  } catch (error) {
+    next(error);
+  }
+}
+

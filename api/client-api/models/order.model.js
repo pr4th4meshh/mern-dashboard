@@ -38,6 +38,7 @@ const orderSchema = mongoose.Schema({
       "processing order",
       "order out for delivery",
       "order delivered",
+      "cancelled" // only on client side
     ],
     default: "order confirmed",
   },
